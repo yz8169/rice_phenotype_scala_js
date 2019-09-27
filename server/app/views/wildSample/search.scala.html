@@ -1,0 +1,58 @@
+@()(implicit request: RequestHeader)
+@main("野生稻表型信息搜索") {
+	<div class="row">
+		<div class="form-group col-sm-12">
+			<h2 class="page-heading"
+			style="text-align: left;
+				border-bottom: 5px solid #e9f3f4">
+				野生稻表型信息搜索
+			</h2>
+		</div>
+	</div>
+
+			<form class="registration-form form-horizontal" id="form" accept-charset="UTF-8">
+				<div id="selectBlock">
+					<div id="content">
+					</div>
+
+					<div class="form-group">
+						<div class="actions col-sm-offset-2 col-sm-2">
+							<button type="button" class="btn btn-default" title="新增" onclick="WildSampleSearch.addSelect">
+								新增条件
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="actions col-sm-offset-2 col-sm-3">
+						<button type="button" class="btn btn-primary" style="width: 90%;" id="search" onclick="WildSampleSearch.mySearch">
+							搜索
+						</button>
+					</div>
+				</div>
+			</form>
+
+			<label>请选择要显示的列:</label>
+			<div id="checkbox" class="checkbox">
+			</div>
+
+			<table class="display table table-bordered" id="table" data-pagination="true" data-search="true"
+			data-toolbar="#toolbar" data-page-list="[10, 25, 50, 100, all]" data-multiple-search="true">
+				<thead>
+					<tr>
+						<th data-field="number" data-sortable="true" data-formatter="WildSampleView.numberFmt">原统一编号</th>
+						<th data-field="source" data-sortable="true" id="marker">采集/原产地</th>
+						<th data-field="comment" data-sortable="true">备注</th>
+					</tr>
+				</thead>
+			</table>
+
+			<script>
+				$(function () {
+					WildSampleSearch.init
+
+				})
+		</script>
+
+}

@@ -1,0 +1,36 @@
+@()(implicit request: RequestHeader)
+@main("地方稻种表型信息一览") {
+	<div class="row">
+		<div class="form-group col-sm-12">
+			<h2 class="page-heading"
+			style="text-align: left;
+				border-bottom: 5px solid #e9f3f4">地方稻种表型信息一览</h2>
+		</div>
+	</div>
+
+	<label>请选择要显示的列:</label>
+	<div id="checkbox" class="checkbox">
+
+	</div>
+
+	<table class="display table table-bordered" id="table" data-pagination="true" data-search="true"
+	data-toolbar="#toolbar" data-page-list="[10, 25, 50, 100, all]" data-multiple-search="true"
+
+	>
+		<thead>
+			<tr>
+				<th data-field="number" data-sortable="true" data-formatter="LocalSampleView.numberFmt">统一编号</th>
+				<th data-field="name" data-sortable="true">品种名称</th>
+				<th data-field="unitNumber" data-sortable="true" id="marker">单位编号</th>
+				<th data-field="comment" data-sortable="true">备注</th>
+
+			</tr>
+		</thead>
+	</table>
+	<script>
+			$(function () {
+				LocalSampleView.init
+
+			})
+	</script>
+}

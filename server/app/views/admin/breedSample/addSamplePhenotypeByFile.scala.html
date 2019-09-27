@@ -1,0 +1,76 @@
+@()(implicit request: play.api.mvc.RequestHeader)
+	@admin.main("批量新增育成品种表型（文件）") {
+		<style>
+				.form-control {
+					display: block;
+					width: 100%;
+					height: 34px;
+					padding: 6px 12px;
+					font-size: 14px;
+					line-height: 1.42857143;
+					color: #555;
+					background: #fff none;
+					border: 1px solid #ccc;
+					border-radius: 4px;
+					-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+					box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+					-webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+					-o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+					transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+				}
+
+		</style>
+		<div class="container">
+			<form class="registration-form" id="form"
+			accept-charset="UTF-8" method="post" style="margin: 20px;" enctype="multipart/form-data">
+
+				<div class="row">
+					<div class="form-group col-sm-12">
+						<h2 class="page-heading"
+						style="text-align: left;
+							border-bottom: 5px solid #e9f3f4">批量新增育成品种表型（文件）</h2>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="form-group col-sm-12">
+						<label>选择表型数据文件（*.xlsx）:</label>
+						<input id="input-1" type="file" class="file" name="file" data-show-preview="false"
+						data-show-upload="false" accept=".xlsx">
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="form-group col-sm-12">
+						<div class="actions">
+							<input type="button" id="submit" value="更新数据库"
+							class="btn btn-primary btn-lg" onclick="BreedSampleAddFile.add" style="width: 100%">
+						</div>
+					</div>
+
+				</div>
+
+			</form>
+			<div style="margin: 20px">
+				<p>注1：<a href="@routes.AdminController.downloadExampleFile()?fileName=breed_sample.xlsx" ><b>
+					表型数据示例文件</b></a>。</p>
+				<p>注2：表型数据文件，为Excel文件（Excel 2007以上版本），其中，第一行为表头。</p>
+				<p>注3：上传样品的表型数据，会完全覆盖数据库中已有样品的表型数据。</p>
+			</div>
+
+		</div>
+
+		<script>
+				$(function () {
+					BreedSampleAddFile.init
+
+				})
+
+				$("#input-1").fileinput({
+					showPreview: false,
+					browseLabel: "选择...",
+					removeLabel: "删除文件",
+					language: "zh"
+				});
+		</script>
+	}

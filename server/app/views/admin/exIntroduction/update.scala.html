@@ -1,0 +1,131 @@
+@(number:String)(implicit request: play.api.mvc.RequestHeader)
+@admin.main("更新外引种表型信息") {
+	<div class="container">
+		<div class="row">
+			<div class="form-group col-sm-12">
+				<h2 class="page-heading"
+				style="text-align: left;
+					border-bottom: 5px solid #e9f3f4">更新外引种表型信息</h2>
+			</div>
+		</div>
+
+		<form class="form-horizontal" id="form"
+		accept-charset="UTF-8" method="post" >
+
+			<h4>基本信息</h4>
+
+			<div id="basicInfo">
+			<div class="form-group">
+				<label class="control-label col-sm-2">统一编号：</label>
+				<div class="col-sm-3">
+					<input class="form-control" name="number" value="@number" readonly/>
+				</div>
+				<label class="control-label col-sm-2">库编号：</label>
+				<div class="col-sm-3">
+					<input class="form-control" name="warehouseNumber"/>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2">单位编号：</label>
+				<div class="col-sm-3">
+					<input class="form-control" name="unitNumber"/>
+				</div>
+				<label class="control-label col-sm-2">品种名称：</label>
+				<div class="col-sm-3">
+					<input class="form-control" name="name"/>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2">品种原名：</label>
+				<div class="col-sm-3">
+					<input class="form-control" name="oldName"/>
+				</div>
+				<label class="control-label col-sm-2">科名：</label>
+				<div class="col-sm-3">
+					<input class="form-control" name="family"/>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2">属名：</label>
+				<div class="col-sm-3">
+					<input class="form-control" name="genus"/>
+				</div>
+				<label class="control-label col-sm-2">学名：</label>
+				<div class="col-sm-3">
+					<input class="form-control" name="scientificName"/>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2">原产地：</label>
+				<div class="col-sm-3">
+					<input class="form-control" name="sourceArea"/>
+				</div>
+				<label class="control-label col-sm-2">种子来源：</label>
+				<div class="col-sm-3">
+					<input class="form-control" name="seedSource"/>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2">保存单位：</label>
+				<div class="col-sm-3">
+					<input class="form-control" name="storeUnit"/>
+				</div>
+				<label class="control-label col-sm-2">原号引号：</label>
+				<div class="col-sm-3">
+					<input class="form-control" name="originalNumber"/>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2">保存单位_2：</label>
+				<div class="col-sm-3">
+					<input class="form-control" name="storeUnit2"/>
+				</div>
+				<label class="control-label col-sm-2">省：</label>
+				<div class="col-sm-3">
+					<input class="form-control" name="province"/>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2">样品类型：</label>
+				<div class="col-sm-3">
+					<input class="form-control" name="sampleKind"/>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2">备注：</label>
+				<div class="col-sm-6">
+					<textarea class="form-control" name="comment" rows="4"></textarea>
+				</div>
+			</div>
+		</div>
+
+			<h4>表型信息</h4>
+
+			<div id="phenotype"></div>
+
+			<div class="form-group">
+				<div class="actions col-sm-offset-2 col-sm-3">
+					<button class="btn btn-primary " style="width: 90%;" onclick="ExIntroductionUpdate.update">更新此表型信息</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script>
+			$(document).ready(function () {
+				ExIntroductionUpdate.init
+
+			});
+
+
+	</script>
+
+
+}

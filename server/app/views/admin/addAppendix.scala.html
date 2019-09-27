@@ -1,0 +1,254 @@
+@(id: String)(implicit request: play.api.mvc.RequestHeader)
+@admin.main("添加照片") {
+	<style>
+			.btn {
+				display: inline-block;
+				margin-bottom: 0;
+				font-weight: normal;
+				text-align: center;
+				vertical-align: middle;
+				-ms-touch-action: manipulation;
+				touch-action: manipulation;
+				cursor: pointer;
+				background-image: none;
+				border: 1px solid #ccc;
+				white-space: nowrap;
+				padding: 6px 12px;
+				font-size: 14px;
+				line-height: 1.42857143;
+				border-radius: 4px;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+			}
+	</style>
+	<div class="container">
+
+		<div class="row">
+			<div class="form-group col-sm-12">
+				<h2 class="page-heading"
+				style="text-align: left;
+					border-bottom: 5px solid #e9f3f4">新增样品相关照片（@id）</h2>
+			</div>
+		</div>
+
+		<form class="registration-form form-horizontal" id="form"
+		accept-charset="UTF-8" method="post">
+			<input type="hidden" value="@id" name="number">
+
+			<div id="content">
+				<div id="photo1">
+					<h4>照片<span id="id">1</span></h4>
+					<div class="form-group">
+						<label class="control-label col-sm-1">
+							文件:</label>
+						<div class="col-sm-8">
+							<input id="file" type="file" class="file control-label" name="file" data-show-preview="true"
+							data-show-upload="false" accept=".png,.jpg" >
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="control-label col-sm-1">
+							说明:</label>
+						<div class="col-sm-8">
+							<input class="form-control" name="describes[]"/>
+						</div>
+					</div>
+
+					<div class="form-group" id="addSelect">
+						<div class="actions col-sm-offset-1 col-sm-2">
+							<button type="button" class="btn btn-default deleteButton" disabled onclick="deleteSelect(this)"
+							style="width: 100%">
+								删除
+							</button>
+						</div>
+					</div>
+
+					<hr>
+
+				</div>
+
+			</div>
+
+			<div class="form-group" id="addSelect">
+				<div class="actions col-sm-offset-1 col-sm-2">
+					<button type="button" class="btn btn-default" title="新增" onclick="addSelect(this)" style="width: 100%">
+						新增
+					</button>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="actions col-sm-offset-1 col-sm-2">
+					<button type="button" class="btn btn-primary" style="width: 90%;" onclick="myRun()">
+						运行</button>
+				</div>
+
+			</div>
+
+
+		</form>
+
+		<div style="margin: 20px">
+			<div class="row">
+				<div class="form-group col-sm-12">
+					<span>注：上传的文件会覆盖该样品相关的同名文件！</span>
+					<div>附件上传完成后，可以对附件进行<a href="">管理</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+			var i = 1
+			var j = 1
+			var photo
+
+			$(".file").fileinput({
+				showPreview: true,
+				browseLabel: "选择...",
+				removeLabel: "删除文件",
+				uploadLabel: "上传附件",
+				language: "zh",
+				dropZoneEnabled: false
+
+			});
+
+			function refreshFile(){
+				$(".file").fileinput({
+					showPreview: true,
+					browseLabel: "选择...",
+					removeLabel: "删除文件",
+					uploadLabel: "上传附件",
+					language: "zh",
+					dropZoneEnabled: false
+
+				});
+			}
+
+
+
+			$(function () {
+				refreshFile()
+				photo = "<div id=\"photo1\">\n" +
+						"\t\t\t\t\t<h4>照片<span id=\"id\">1</span></h4>\n" +
+						"\t\t\t\t\t<div class=\"form-group\">\n" +
+						"\t\t\t\t\t\t<label class=\"control-label col-sm-1\">\n" +
+						"\t\t\t\t\t\t\t文件:</label>\n" +
+						"\t\t\t\t\t\t<div class=\"col-sm-8\">\n" +
+						"\t\t\t\t\t\t\t<input id=\"file\" type=\"file\" class=\"file control-label\" name=\"file\" data-show-preview=\"true\"\n" +
+						"\t\t\t\t\t\t\tdata-show-upload=\"false\" accept=\".png,.jpg\" >\n" +
+						"\t\t\t\t\t\t</div>\n" +
+						"\t\t\t\t\t</div>\n" +
+						"\n" +
+						"\t\t\t\t\t<div class=\"form-group\">\n" +
+						"\t\t\t\t\t\t<label class=\"control-label col-sm-1\">\n" +
+						"\t\t\t\t\t\t\t说明:</label>\n" +
+						"\t\t\t\t\t\t<div class=\"col-sm-8\">\n" +
+						"\t\t\t\t\t\t\t<input class=\"form-control\" name=\"describes[]\"/>\n" +
+						"\t\t\t\t\t\t</div>\n" +
+						"\t\t\t\t\t</div>\n" +
+						"\n" +
+						"\t\t\t\t\t<div class=\"form-group\" id=\"addSelect\">\n" +
+						"\t\t\t\t\t\t<div class=\"actions col-sm-offset-1 col-sm-2\">\n" +
+						"\t\t\t\t\t\t\t<button type=\"button\" class=\"btn btn-default deleteButton\" disabled onclick=\"deleteSelect(this)\"\n" +
+						"\t\t\t\t\t\t\tstyle=\"width: 100%\">\n" +
+						"\t\t\t\t\t\t\t\t删除\n" +
+						"\t\t\t\t\t\t\t</button>\n" +
+						"\t\t\t\t\t\t</div>\n" +
+						"\t\t\t\t\t</div>\n" +
+						"\n" +
+						"\t\t\t\t\t<hr>\n" +
+						"\n" +
+						"\t\t\t\t</div>"
+
+				bootstrapValidator()
+			})
+
+			function addSelect() {
+				i++
+				j++
+				$(photo).find("#id").text(i)
+				var html = $(photo).prop("outerHTML")
+				$("#content").append(html);
+				refreshFile()
+				setDisable()
+			}
+
+			function setDisable() {
+				if (j < 2) {
+					$(".deleteButton").attr("disabled", true)
+				} else {
+					$(".deleteButton").attr("disabled", false)
+				}
+			}
+
+			function deleteSelect(element) {
+				$(element).parents("#photo1").remove()
+				j--
+				setDisable()
+			}
+
+			function myRun() {
+				var form = $("#form")
+				var form1 = new FormData($("#form")[0])
+				var fv = form.data("bootstrapValidator")
+				fv.validate()
+				if (fv.isValid()) {
+					var element = "<div id='content'><span id='info'>正在运行...</span>&nbsp;<img class='runningImage' src='/assets/images/running2.gif' style='width: 30px;height: 20px;'></div>"
+					var index = layer.alert(element, {
+						skin: 'layui-layer-molv'
+						, closeBtn: 0,
+						title: "信息",
+						btn: []
+					});
+					$.ajax({
+						url: "",
+						type: "post",
+						processData: false,
+						contentType: false,
+						data: form1,
+						success: function (data) {
+							layer.close(index)
+							if (!data.valid) {
+								swal("Error", data.message, "error")
+							} else {
+								swal("成功！", "新增照片成功！", "success")
+							}
+						}
+					});
+
+				}
+
+
+			}
+
+			function bootstrapValidator() {
+				$('#form').bootstrapValidator({
+					framework: 'bootstrap',
+					icon: {
+						valid: 'glyphicon glyphicon-ok',
+						invalid: 'glyphicon glyphicon-remove',
+						validating: 'glyphicon glyphicon-refresh'
+					},
+					fields: {
+						file: {
+							validators: {
+								file: {
+									extension: 'png,jpg',
+									message: '图片格式不正确(*.png,*.jpg)！'
+								}
+							}
+						},
+
+
+					}
+
+				});
+			}
+
+	</script>
+}

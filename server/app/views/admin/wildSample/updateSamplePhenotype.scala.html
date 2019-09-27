@@ -1,0 +1,55 @@
+@(number:String)(implicit request: play.api.mvc.RequestHeader)
+@admin.main("更新野生稻表型信息") {
+	<div class="container">
+		<div class="row">
+			<div class="form-group col-sm-12">
+				<h2 class="page-heading"
+				style="text-align: left;
+					border-bottom: 5px solid #e9f3f4">更新野生稻表型信息</h2>
+			</div>
+		</div>
+
+		<form class="form-horizontal" id="form"
+		accept-charset="UTF-8" method="post" >
+
+			<h4>基本信息</h4>
+			<div class="form-group">
+				<label class="control-label col-sm-2">统一编号：</label>
+				<div class="col-sm-3">
+					<input class="form-control" name="number" readonly value="@number"/>
+				</div>
+				<label class="control-label col-sm-2">采集/原产地：</label>
+				<div class="col-sm-3">
+					<input class="form-control" name="source"/>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2">备注：</label>
+				<div class="col-sm-6">
+					<textarea class="form-control" name="comment" rows="4"></textarea>
+				</div>
+			</div>
+
+			<h4>表型信息</h4>
+
+			<div id="phenotype"></div>
+
+			<div class="form-group">
+				<div class="actions col-sm-offset-2 col-sm-3">
+					<button class="btn btn-primary " style="width: 90%;" onclick="WildSampleUpdate.update">更新此表型信息</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script>
+			$(document).ready(function () {
+				WildSampleUpdate.init
+
+			});
+
+
+	</script>
+
+
+}

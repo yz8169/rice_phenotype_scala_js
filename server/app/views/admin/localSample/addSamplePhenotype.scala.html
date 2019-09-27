@@ -1,0 +1,73 @@
+@()(implicit request: play.api.mvc.RequestHeader)
+@admin.main("新增地方稻种表型") {
+	<style>
+			a {
+				cursor: pointer;
+			}
+
+			.popover {
+				max-width: 800px;
+			}
+	</style>
+	<div class="container">
+		<div class="row">
+			<div class="form-group col-sm-12">
+				<h2 class="page-heading"
+				style="text-align: left;
+					border-bottom: 5px solid #e9f3f4">新增地方稻种表型</h2>
+			</div>
+		</div>
+
+		<form class="form-horizontal" id="form" accept-charset="UTF-8" method="post" action="">
+
+			<span class="col-sm-offset-2 text-success" style="line-height: 35px;">@request.flash.get("info")
+			</span>
+
+			<h4>基本信息</h4>
+			<div class="form-group">
+				<label class="control-label col-sm-2">统一编号：</label>
+				<div class="col-sm-3">
+					<input class="form-control" name="number"/>
+				</div>
+				<label class="control-label col-sm-2">品种名称：</label>
+				<div class="col-sm-3">
+					<input class="form-control" name="name"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-2">单位编号：</label>
+				<div class="col-sm-3">
+					<input class="form-control" name="unitNumber"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-2">备注：</label>
+				<div class="col-sm-6">
+					<textarea class="form-control" name="comment" rows="4"></textarea>
+				</div>
+			</div>
+
+			<h4>表型信息</h4>
+
+			<div id="phenotype"></div>
+
+			<div class="form-group">
+				<div class="actions col-sm-offset-2 col-sm-3">
+					<input type="button" class="btn btn-primary" style="width: 90%;" value="新增此表型信息"
+					onclick="LocalSampleAddMan.add">
+				</div>
+			</div>
+		</form>
+	</div>
+	<script>
+			$(function () {
+				LocalSampleAddMan.init
+
+			});
+
+
+
+	</script>
+
+
+}

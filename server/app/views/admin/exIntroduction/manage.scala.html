@@ -1,0 +1,61 @@
+@()(implicit request: play.api.mvc.RequestHeader)
+@admin.main("管理外引种表型信息") {
+	<div class="container">
+		<div class="row">
+			<div class="form-group col-sm-12">
+				<h2 class="page-heading"
+				style="text-align: left;
+					border-bottom: 5px solid #e9f3f4">管理外引种表型信息</h2>
+			</div>
+		</div>
+
+		<label>请选择要显示的列:</label>
+		<div id="checkbox" class="checkbox">
+
+		</div>
+
+		<div id="toolbar">
+			<button type="button" class="btn btn-primary" id="deleteButton" disabled="disabled" onclick="ExIntroductionManage.deletes">
+				<i class="glyphicon glyphicon-trash"></i>&nbsp;删除选中数据
+			</button>
+		</div>
+
+		<div class="table-responsive" id="tableContent">
+			<table class="display table table-bordered" id="table" data-pagination="true" data-search="true"
+			data-toolbar="#toolbar" data-page-list="[10, 25, 50, 100, all]" data-multiple-search="true">
+				<thead>
+					<tr>
+						<th data-field="state" data-checkbox="true"></th>
+						<th data-field="number" data-sortable="true" data-formatter="ExIntroductionManage.numberFmt">统一编号</th>
+						<th data-field="warehouseNumber" data-sortable="true">库编号</th>
+						<th data-field="unitNumber" data-sortable="true">单位编号</th>
+						<th data-field="name" data-sortable="true">品种名称</th>
+						<th data-field="oldName" data-sortable="true">品种原名</th>
+						<th data-field="family" data-sortable="true">科名</th>
+						<th data-field="genus" data-sortable="true">属名</th>
+						<th data-field="scientificName" data-sortable="true">学名</th>
+						<th data-field="sourceArea" data-sortable="true">原产地</th>
+						<th data-field="seedSource" data-sortable="true">种子来源</th>
+						<th data-field="storeUnit" data-sortable="true">保存单位</th>
+						<th data-field="originalNumber" data-sortable="true" id="marker">原号引号</th>
+						<th data-field="comment" data-sortable="true">备注</th>
+						<th data-field="storeUnit2" data-sortable="true" >保存单位_2</th>
+						<th data-field="province" data-sortable="true" >省</th>
+						<th data-field="sampleKind" data-sortable="true" >样品类型</th>
+						<th data-field="operate" data-formatter="ExIntroductionManage.operateFmt">操作</th>
+						<th data-field="aOperate" data-formatter="ExIntroductionManage.aOperateFmt">附件操作</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+
+	<script>
+			$(function () {
+				ExIntroductionManage.init
+
+			})
+
+	</script>
+
+}

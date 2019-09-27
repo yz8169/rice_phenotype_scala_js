@@ -1,0 +1,107 @@
+@(number: String)(implicit request: play.api.mvc.RequestHeader)
+@admin.main("地方稻种样品详细信息") {
+	<div class="container">
+		<div class="row">
+			<div class="form-group col-sm-12">
+				<h2 class="page-heading"
+				style="text-align: left;
+					border-bottom: 5px solid #e9f3f4">地方稻种样品详细信息</h2>
+			</div>
+		</div>
+
+		<form id="form" class="form" accept-charset="UTF-8" method="post">
+
+			<div class="form-body form-horizontal">
+
+				<div class="form-group" style="margin-top: -15px">
+					<div class="col-sm-5">
+						信息有变动？点击此处<a href="@adminC.routes.LocalSampleController.updateSamplePhenotypeBefore()?number=@number">
+						修改信息</a>
+					</div>
+				</div>
+
+
+				<h4 >基本信息</h4>
+
+				<div class="form-group">
+					<label class="control-label col-sm-2">统一编号：</label>
+					<div class="col-sm-3">
+						<p class="form-control-static" id="number">
+						@number
+						</p>
+					</div>
+					<label class="control-label col-sm-2">品种名称：</label>
+					<div class="col-sm-3">
+						<p class="form-control-static" id="name">
+						</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-2">单位编号：</label>
+					<div class="col-sm-3">
+						<p class="form-control-static" id="unitNumber">
+						</p>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="control-label col-sm-2">备注：</label>
+					<div class="col-sm-6">
+						<p class="form-control-static" id="comment">
+						</p>
+					</div>
+				</div>
+
+				<h4 >表型信息</h4>
+
+				<div id="phenotypeInfo"></div>
+
+				<h4>附件信息</h4>
+
+				<div class="form-group" >
+					<div class="col-sm-5">
+						点击此处<a href="@adminC.routes.LocalSampleController.manageAppendixBefore()?number=@number">附件管理</a>
+					</div>
+				</div>
+
+				<div class="row" id="appendix" style="margin-top: 20px">
+
+				</div>
+
+
+			</div>
+
+		</form>
+
+
+	</div>
+
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div class="kv-zoom-actions pull-right">
+						<button type="button" class="btn btn-default btn-close" title="关闭当前预览" data-dismiss="modal" aria-hidden="true"><i class="glyphicon glyphicon-remove"></i></button></div>
+					<h3 class="modal-title">
+						详细预览&nbsp;<small><span class="kv-zoom-title" id="title"></span></small><span class="kv-zoom-title"></span></h3>
+				</div>
+				<div class="modal-body">
+					<div class="floating-buttons"></div>
+					<div class="kv-zoom-body file-zoom-content">
+						<img src="" id="image" style="height: auto;
+							width: auto;
+							max-width: 100%;
+							max-height: 100%">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		$(function () {
+			LocalSampleDetail.init
+		})
+
+	</script>
+}

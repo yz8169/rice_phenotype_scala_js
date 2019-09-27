@@ -1,0 +1,192 @@
+@(number: String)(implicit request: play.api.mvc.RequestHeader)
+@admin.main("管理外引种样品附件") {
+	<style>
+			.btn {
+				display: inline-block;
+				margin-bottom: 0;
+				font-weight: normal;
+				text-align: center;
+				vertical-align: middle;
+				-ms-touch-action: manipulation;
+				touch-action: manipulation;
+				cursor: pointer;
+				background-image: none;
+				border: 1px solid #ccc;
+				white-space: nowrap;
+				padding: 6px 12px;
+				font-size: 14px;
+				line-height: 1.42857143;
+				border-radius: 4px;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+			}
+	</style>
+	<div class="container">
+		<div class="row">
+			<div class="form-group col-sm-12">
+				<h2 class="page-heading"
+				style="text-align: left;
+					border-bottom: 5px solid #e9f3f4">管理外引种样品附件（@number）</h2>
+			</div>
+		</div>
+		<div id="toolbar">
+			<button type="button" class="btn btn-primary" id="deleteButton" onclick="ExIntroductionAManage.addBefore">
+				<i class="fa fa-plus"></i>&nbsp;上传附件
+			</button>
+		</div>
+
+		<div class="row" id="appendix" style="margin-top: 20px">
+
+		</div>
+
+		<div id="addModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog" style="width: 1000px">
+				<div class="modal-content">
+					<div class="modal-header bg-primary">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+						onclick="ExIntroductionAManage.refreshImage"
+						></button>
+						<h4 class="modal-title">
+							<i class="fa fa-plus"></i>
+							<span id="lblAddTitle" style="font-weight: bold">上传附件</span>
+						</h4>
+					</div>
+					<form class="form-horizontal" id="form" action="" data-toggle="validator" enctype="multipart/form-data">
+						<div class="modal-body">
+							<div class="row-fluid">
+								<input name="number" type="hidden" value="@number">
+
+								<div class="form-group">
+									<label class="control-label col-sm-2">选择文件:</label>
+									<div class="col-sm-9">
+										<input id="input-1" type="file" multiple class="file" name="file"
+										accept=".png,.jpg"
+										>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<div class="actions col-sm-offset-2 col-sm-8">
+										<p>
+
+											<b>注：</b>上传的文件会覆盖该样品相关的同名文件！<br>
+										</p>
+									</div>
+
+								</div>
+
+							</div>
+						</div>
+						<div class="modal-footer bg-info">
+							<button type="button" class="btn green" data-dismiss="modal" onclick="ExIntroductionAManage.refreshImage">
+								取消</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<div class="kv-zoom-actions pull-right">
+							<button type="button" class="btn btn-default btn-close" title="关闭当前预览" data-dismiss="modal" aria-hidden="true"><i class="glyphicon glyphicon-remove"></i></button></div>
+						<h3 class="modal-title">
+							详细预览&nbsp;<small><span class="kv-zoom-title" id="title"></span></small><span class="kv-zoom-title"></span></h3>
+					</div>
+					<div class="modal-body">
+						<div class="floating-buttons"></div>
+						<div class="kv-zoom-body file-zoom-content">
+							<img src="" id="image" style="height: auto;
+								width: auto;
+								max-width: 100%;
+								max-height: 100%">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="updateDescModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog" style="width: 600px">
+				<div class="modal-content">
+					<div class="modal-header bg-primary">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+						<h4 class="modal-title">
+							<i class="fa fa-edit"></i>
+							<span id="lblAddTitle" style="font-weight: bold">更改说明</span>
+						</h4>
+					</div>
+					<form class="form-horizontal" id="form"
+					data-toggle="validator" method="post" >
+						<div class="modal-body">
+							<div class="row-fluid">
+								<input class="form-control" name="missionId" type="hidden"/>
+
+								<div class="form-group">
+									<label class="control-label col-sm-4">文件名:</label>
+									<div class="col-sm-6">
+										<input class="form-control" name="fileName" readonly/>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="control-label col-sm-4">说明:</label>
+									<div class="col-sm-6">
+										<input class="form-control" name="describe" style="border-radius: 4px;">
+										</input>
+									</div>
+								</div>
+
+
+							</div>
+						</div>
+						<div class="modal-footer bg-info">
+							<input type="hidden" id="id" name="id" />
+							<button type="button" class="btn blue" onclick="ExIntroductionAManage.updateDesc">
+								确定</button>
+							<button type="button" class="btn green" data-dismiss="modal">
+								取消</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+	</div>
+	<script>
+
+			$(".file").fileinput({
+				showPreview: true,
+				browseLabel: "选择...",
+				removeLabel: "删除文件",
+				uploadLabel: "上传附件",
+				language: "zh",
+				uploadAsync: false,
+				fileActionSettings: {
+					showZoom: false,
+					showRemove: true,
+				},
+				uploadUrl: "@adminC.routes.ExIntroductionController.addAppendix()",
+				allowedFileExtensions: ['jpg', 'png'],
+				enctype: 'multipart/form-data',
+				uploadExtraData: function () {
+					return {"number": "@number"}
+				}
+
+			});
+
+			$(function () {
+				ExIntroductionAManage.init
+
+			})
+
+
+	</script>
+}

@@ -1,0 +1,76 @@
+@()(implicit request: RequestHeader)
+
+<div class="banner">
+	<div class="logo">
+		<a href="@routes.IndexController.toIndex()"><img src="@routes.Assets.at("images/logo.png")" style="width: 150px"></a>
+		<h1><span>Rice Resource Bank</span> <font style="font-size: 28px">&nbsp;水稻种质资源数据库</font></h1>
+	</div>
+</div>
+
+<nav class="navbar navbar-default">
+		<!-- Brand and toggle get grouped for better mobile display -->
+	<div class="navbar-header">
+		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="sr-only">Toggle navigation</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		</button>
+	</div>
+		<!-- Collect the nav links, forms, and other content for toggling -->
+	<div class="collapse navbar-collapse" id="navbar-collapse">
+		<ul class="nav navbar-nav">
+			<li><a href="@routes.IndexController.toIndex()"><span class="glyphicon glyphicon-home"></span> 首页</a></li>
+
+
+
+			<li class="dropdown">
+				<a href="#">地方稻种表型 <span class="fa fa-caret-down"></span></a>
+				<ul class="dropdown-menu">
+					<li><a href="@routes.LocalSampleController.viewBefore()">信息一览</a></li>
+					<li><a href="@routes.LocalSampleController.searchBefore()">搜索</a></li>
+					<li><a href="@routes.LocalSampleController.statBefore()">统计</a></li>
+				</ul>
+			</li>
+
+			<li class="dropdown">
+				<a href="#">育成品种表型 <span class="fa fa-caret-down"></span></a>
+				<ul class="dropdown-menu">
+					<li><a href="@routes.BreedSampleController.viewBefore()">信息一览</a></li>
+					<li><a href="@routes.BreedSampleController.searchBefore()">搜索</a></li>
+					<li><a href="@routes.BreedSampleController.statBefore()">统计</a></li>
+
+				</ul>
+			</li>
+
+			<li class="dropdown">
+				<a href="#">野生稻表型 <span class="fa fa-caret-down"></span></a>
+				<ul class="dropdown-menu">
+					<li><a href="@routes.WildSampleController.viewBefore()">信息一览</a></li>
+					<li><a href="@routes.WildSampleController.searchBefore()">搜索</a></li>
+					<li><a href="@routes.WildSampleController.statBefore()">统计</a></li>
+
+
+				</ul>
+			</li>
+
+			<li class="dropdown">
+				<a href="#">外引种表型 <span class="fa fa-caret-down"></span></a>
+				<ul class="dropdown-menu">
+					<li><a href="@routes.ExIntroductionController.viewBefore()">信息一览</a></li>
+					<li><a href="@routes.ExIntroductionController.searchBefore()">搜索</a></li>
+					<li><a href="@routes.ExIntroductionController.statBefore()">统计</a></li>
+
+
+				</ul>
+			</li>
+
+			<li style="float: right;position: absolute;right: 25px">
+				<a href="@routes.AppController.loginBefore()" id="loginA"><span class="fa fa-user"></span> 登录</a>
+			</li>
+
+
+		</ul>
+	</div>
+		<!-- /.navbar-collapse -->
+</nav>
