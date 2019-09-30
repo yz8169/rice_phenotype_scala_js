@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils
 import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, ControllerComponents}
 import shared.Shared
-import tool.FormTool
+import tool.{FormTool, Tool}
 import utils.Utils
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -83,9 +83,8 @@ class BreedSampleController @Inject()(cc: ControllerComponents, breedSampleDao: 
         val map = Utils.str2Map(row.phenotype)
         Map("number" -> row.number, data.phenotype -> map.getOrElse(phenotype, ""))
       }.filter { map =>
-        StringUtils.isNotBlank(map(phenotype)) && data.number.map { number =>
-          number.split(",").contains(map("number"))
-        }.getOrElse(true)
+        val b = Tool.validByNumbers(data.numbers, map)
+        StringUtils.isNotBlank(map(phenotype)) && b
       }
       val json = Json.toJson(array)
       Ok(json)

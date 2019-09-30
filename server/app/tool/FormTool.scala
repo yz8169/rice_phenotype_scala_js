@@ -3,6 +3,7 @@ package tool
 import models.Tables.ExIntroductionRow
 import play.api.data._
 import play.api.data.Forms._
+import tool.Pojo._
 
 /**
   * Created by yz on 2019/1/18
@@ -43,12 +44,10 @@ class FormTool {
     )(NumberData.apply)(NumberData.unapply)
   )
 
-  case class StatData(phenotype: String, number: Option[String])
-
   val statForm = Form(
     mapping(
       "phenotype" -> text,
-      "number" -> optional(text),
+      "numbers" -> seq(text),
     )(StatData.apply)(StatData.unapply)
   )
 
@@ -58,6 +57,13 @@ class FormTool {
     mapping(
       "numbers" -> seq(text)
     )(NumbersData.apply)(NumbersData.unapply)
+  )
+
+ val userLimitForm = Form(
+    mapping(
+      "id" -> number,
+      "numbers" -> seq(text)
+    )(UserLimitData.apply)(UserLimitData.unapply)
   )
 
   case class LocalSampleData(number: String, name: String, unitNumber: String, phenotype: String, comment: String)
@@ -148,6 +154,27 @@ class FormTool {
       "fileName" -> text,
       "describe" -> text,
     )(DescData.apply)(DescData.unapply)
+  )
+
+  case class userNameData(name: String)
+
+  val userNameForm = Form(
+    mapping(
+      "name" -> text
+    )(userNameData.apply)(userNameData.unapply)
+  )
+
+  val userForm = Form(
+    mapping(
+      "name" -> text,
+      "password" -> text
+    )(UserData.apply)(UserData.unapply)
+  )
+
+  val idForm = Form(
+    mapping(
+      "id" -> number
+    )(IdData.apply)(IdData.unapply)
   )
 
 

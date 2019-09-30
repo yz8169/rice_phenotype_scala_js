@@ -20,11 +20,15 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 import scala.sys.process.Process
 import scala.collection.JavaConverters._
+import scala.reflect.ClassTag
 
 /**
-  * Created by yz on 2017/6/16.
-  */
+ * Created by yz on 2017/6/16.
+ */
 object Utils {
+
+  val errorClass = "error"
+  val successClass = "text-success"
 
   val projectName = "rice_phenotype"
   val dbName = "rice_phenotype_database"
@@ -217,6 +221,17 @@ object Utils {
 
   }
 
+  def getJsonByT[T](y: T) = {
+    val map = y.getClass.getDeclaredFields.toBuffer.map { x: Field =>
+      x.setAccessible(true)
+      val kind = x.get(y)
+      val value = getValue(kind, "")
+      (x.getName, value)
+    }.init.toMap
+    Json.toJson(map)
+  }
+
+
   def getArrayByTs[T](x: Seq[T]) = {
     x.map { y =>
       getMapByT(y)
@@ -228,6 +243,15 @@ object Utils {
       getMapByT(y, jsonField)
     }
   }
+
+  def getArrayByTs[A:ClassTag, B:ClassTag](x: Seq[(A, B)]) = {
+    x.map { case (t1, t2) =>
+      val map1 = getMapByT(t1)
+      val map2 = getMapByT(t2)
+      map1 ++ map2
+    }
+  }
+
 
   def getMapByT[T](t: T, jsonField: String) = {
     t.getClass.getDeclaredFields.toBuffer.flatMap { x: Field =>

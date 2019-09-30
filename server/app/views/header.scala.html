@@ -1,3 +1,4 @@
+@import shared.Shared
 @()(implicit request: RequestHeader)
 
 <div class="banner">
@@ -65,9 +66,21 @@
 				</ul>
 			</li>
 
-			<li style="float: right;position: absolute;right: 25px">
-				<a href="@routes.AppController.loginBefore()" id="loginA"><span class="fa fa-user"></span> 登录</a>
-			</li>
+			@if(request.session.get(Shared.userStr).isDefined) {
+				<li class="dropdown" style="float: right;position: absolute;right: 25px" align="right">
+					<a href="#"><span class="fa fa-user"></span>
+						@request.session.get(Shared.userStr)&nbsp;<span class="fa fa-caret-down"></span></a>
+					<ul class="dropdown-menu">
+						<li>
+							<a href="@routes.UserController.logout()" id="loginA"> 退出登录</a>
+						</li>
+					</ul>
+				</li>
+			} else {
+				<li>
+					<a href="@routes.AppController.loginBefore()" id="loginA"><span class="fa fa-user"></span> 登录</a>
+				</li>
+			}
 
 
 		</ul>

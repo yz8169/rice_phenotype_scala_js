@@ -16,7 +16,7 @@ trait Tables {
   import slick.jdbc.{GetResult => GR}
 
   /** DDL for all tables. Call .create to execute. */
-  lazy val schema: profile.SchemaDescription = Array(Account.schema, BreedSample.schema, ExIntroduction.schema, LocalSample.schema, Mode.schema, WildSample.schema).reduceLeft(_ ++ _)
+  lazy val schema: profile.SchemaDescription = Array(Account.schema, BreedSample.schema, ExIntroduction.schema, LocalSample.schema, Mode.schema, User.schema, UserLimit.schema, WildSample.schema).reduceLeft(_ ++ _)
   @deprecated("Use .schema instead of .ddl", "3.0")
   def ddl = schema
 
@@ -206,6 +206,70 @@ trait Tables {
   }
   /** Collection-like TableQuery object for table Mode */
   lazy val Mode = new TableQuery(tag => new Mode(tag))
+
+  /** Entity class storing rows of table User
+   *  @param id Database column id SqlType(INT), AutoInc, PrimaryKey
+   *  @param name Database column name SqlType(VARCHAR), Length(255,true)
+   *  @param password Database column password SqlType(VARCHAR), Length(255,true)
+   *  @param createTime Database column create_time SqlType(DATETIME) */
+  case class UserRow(id: Int, name: String, password: String, createTime: DateTime)
+  /** GetResult implicit for fetching UserRow objects using plain SQL queries */
+  implicit def GetResultUserRow(implicit e0: GR[Int], e1: GR[String], e2: GR[DateTime]): GR[UserRow] = GR{
+    prs => import prs._
+    UserRow.tupled((<<[Int], <<[String], <<[String], <<[DateTime]))
+  }
+  /** Table description of table user. Objects of this class serve as prototypes for rows in queries. */
+  class User(_tableTag: Tag) extends profile.api.Table[UserRow](_tableTag, Some("rice_phenotype"), "user") {
+    def * = (id, name, password, createTime) <> (UserRow.tupled, UserRow.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (Rep.Some(id), Rep.Some(name), Rep.Some(password), Rep.Some(createTime)).shaped.<>({r=>import r._; _1.map(_=> UserRow.tupled((_1.get, _2.get, _3.get, _4.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+    /** Database column id SqlType(INT), AutoInc, PrimaryKey */
+    val id: Rep[Int] = column[Int]("id", O.AutoInc, O.PrimaryKey)
+    /** Database column name SqlType(VARCHAR), Length(255,true) */
+    val name: Rep[String] = column[String]("name", O.Length(255,varying=true))
+    /** Database column password SqlType(VARCHAR), Length(255,true) */
+    val password: Rep[String] = column[String]("password", O.Length(255,varying=true))
+    /** Database column create_time SqlType(DATETIME) */
+    val createTime: Rep[DateTime] = column[DateTime]("create_time")
+
+    /** Uniqueness Index over (name) (database name name_uniq) */
+    val index1 = index("name_uniq", name, unique=true)
+  }
+  /** Collection-like TableQuery object for table User */
+  lazy val User = new TableQuery(tag => new User(tag))
+
+  /** Entity class storing rows of table UserLimit
+   *  @param id Database column id SqlType(INT), PrimaryKey
+   *  @param localSample Database column local_sample SqlType(TEXT)
+   *  @param breedSample Database column breed_sample SqlType(TEXT)
+   *  @param wildSample Database column wild_sample SqlType(TEXT)
+   *  @param exIntroductionSample Database column ex_introduction_sample SqlType(TEXT) */
+  case class UserLimitRow(id: Int, localSample: String, breedSample: String, wildSample: String, exIntroductionSample: String)
+  /** GetResult implicit for fetching UserLimitRow objects using plain SQL queries */
+  implicit def GetResultUserLimitRow(implicit e0: GR[Int], e1: GR[String]): GR[UserLimitRow] = GR{
+    prs => import prs._
+    UserLimitRow.tupled((<<[Int], <<[String], <<[String], <<[String], <<[String]))
+  }
+  /** Table description of table user_limit. Objects of this class serve as prototypes for rows in queries. */
+  class UserLimit(_tableTag: Tag) extends profile.api.Table[UserLimitRow](_tableTag, Some("rice_phenotype"), "user_limit") {
+    def * = (id, localSample, breedSample, wildSample, exIntroductionSample) <> (UserLimitRow.tupled, UserLimitRow.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (Rep.Some(id), Rep.Some(localSample), Rep.Some(breedSample), Rep.Some(wildSample), Rep.Some(exIntroductionSample)).shaped.<>({r=>import r._; _1.map(_=> UserLimitRow.tupled((_1.get, _2.get, _3.get, _4.get, _5.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+    /** Database column id SqlType(INT), PrimaryKey */
+    val id: Rep[Int] = column[Int]("id", O.PrimaryKey)
+    /** Database column local_sample SqlType(TEXT) */
+    val localSample: Rep[String] = column[String]("local_sample")
+    /** Database column breed_sample SqlType(TEXT) */
+    val breedSample: Rep[String] = column[String]("breed_sample")
+    /** Database column wild_sample SqlType(TEXT) */
+    val wildSample: Rep[String] = column[String]("wild_sample")
+    /** Database column ex_introduction_sample SqlType(TEXT) */
+    val exIntroductionSample: Rep[String] = column[String]("ex_introduction_sample")
+  }
+  /** Collection-like TableQuery object for table UserLimit */
+  lazy val UserLimit = new TableQuery(tag => new UserLimit(tag))
 
   /** Entity class storing rows of table WildSample
    *  @param number Database column number SqlType(VARCHAR), PrimaryKey, Length(255,true)

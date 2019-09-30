@@ -82,9 +82,8 @@ class WildSampleController @Inject()(cc: ControllerComponents, wildSampleDao: Wi
         val map = Utils.str2Map(row.phenotype)
         Map("number" -> row.number, data.phenotype -> map.getOrElse(phenotype, ""))
       }.filter { map =>
-        StringUtils.isNotBlank(map(phenotype)) && data.number.map { number =>
-          number.split(",").contains(map("number"))
-        }.getOrElse(true)
+        val b = Tool.validByNumbers(data.numbers, map)
+        StringUtils.isNotBlank(map(phenotype)) && b
       }
       val json = Json.toJson(array)
       Ok(json)

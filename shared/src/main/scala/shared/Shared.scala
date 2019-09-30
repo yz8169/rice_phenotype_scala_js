@@ -95,6 +95,11 @@ object Shared {
 
   val exSelectPhenotypes = Shared.exIntroductionMap.keys.toList
 
+  val adminStr = "phenotype_admin"
+  val userStr = "phenotype_user"
+  val idStr="phenotype_id"
+
+
 
   def getTime(startTime: Long) = {
     val endTime = System.currentTimeMillis()

@@ -1,0 +1,151 @@
+@()(implicit request: play.api.mvc.RequestHeader)
+	@admin.main("权限管理") {
+		<div class="container">
+			<div class="row">
+				<div class="form-group col-sm-12">
+					<h2 class="page-heading"
+					style="text-align: left;
+						border-bottom: 5px solid #e9f3f4">
+						权限管理
+					</h2>
+				</div>
+			</div>
+
+			<div class="table-responsive" id="tableContent">
+				<table class="display table table-bordered" id="table" data-pagination="true" data-search="true"
+				data-toolbar="#toolbar" data-page-list="[10, 25, 50, 100, all]" data-multiple-search="true">
+					<thead>
+						<tr>
+							<th data-field="name" data-sortable="true">用户名</th>
+							<th data-field="localSample" data-sortable="true">地方稻种（可操作）</th>
+							<th data-field="operate" data-formatter="LimitManage.operateFmt">操作</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+
+			<div id="modal" class="modal fade myModal">
+				<div class="modal-dialog" style="width: 1000px">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" data-dismiss="modal" aria-hidden="true" class="close">
+										&times;</button>
+							<h4 class="modal-title">
+								修改权限(<span id="name"></span>)</h4>
+						</div>
+						<div class="modal-body">
+
+							<ul id="myTab" class="nav nav-tabs">
+								<li class="active"><a href="#localSample" data-toggle="tab">
+									地方稻种</a></li>
+								<li><a href="#snpAddress" data-toggle="tab">育成品种</a></li>
+								<li><a href="#snpNation" data-toggle="tab">野生稻</a></li>
+								<li><a href="#snpNation" data-toggle="tab">外引种</a></li>
+
+							</ul>
+							<div id="myTabContent" class="tab-content">
+								<div class="tab-pane fade in active" id="localSample">
+									<div style="margin-top: 15px">
+										<div class="row">
+											<div class="col-sm-11">
+												<form id="form">
+													<input hidden name="id">
+													<div id="checkbox" class="checkbox">
+
+													</div>
+												</form>
+
+
+											</div>
+
+
+										</div>
+
+
+									</div>
+								</div>
+								<div class="tab-pane fade" id="snpAddress">
+									<div>
+										<h5>说明：选取了前100条记录，拥有地理信息的记录条数为<span id="recordsNum"></span>。</h5>
+
+										<div class="row">
+											<div class="col-sm-6">
+												<div id="container" style="width: 400px;
+													height: 400px;"></div>
+
+											</div>
+											<div class="col-sm-6">
+												<table class="display table table-bordered" id="addressTable" data-pagination="true" data-search="true"
+												data-page-list="[10, 25, 50, 100, all]" data-multiple-search="true">
+													<thead>
+														<tr>
+															<th data-field="address" >地理</th>
+															<th data-field="num" >条数</th>
+															<th data-field="percent" >占比</th>
+														</tr>
+													</thead>
+												</table>
+
+											</div>
+
+										</div>
+
+									</div>
+
+
+								</div>
+								<div class="tab-pane fade" id="snpNation">
+									<div>
+										<h5>说明：选取了前100条记录，拥有民族信息的记录条数为<span id="recordsNum">hello!</span>。</h5>
+
+										<div class="row">
+											<div class="col-sm-6">
+												<div id="container" style="width: 400px;
+													height: 400px;"></div>
+
+											</div>
+											<div class="col-sm-6">
+												<table class="display table table-bordered" id="nationTable" data-pagination="true" data-search="true"
+												data-page-list="[10, 25, 50, 100, all]" data-multiple-search="true">
+													<thead>
+														<tr>
+															<th data-field="nation" >民族</th>
+															<th data-field="num" >条数</th>
+															<th data-field="percent" >占比</th>
+														</tr>
+													</thead>
+												</table>
+
+											</div>
+
+										</div>
+
+
+									</div>
+
+								</div>
+							</div>
+
+						</div>
+						<div class="modal-footer">
+							<button type="button"  class="btn btn-default " onclick="LimitManage.updateLimit">
+								确定
+							</button>
+							<button type="button" data-dismiss="modal" class="btn btn-default ">关闭</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+
+		</div>
+
+				<script>
+			$(function () {
+				LimitManage.init
+			})
+
+	</script>
+
+	}

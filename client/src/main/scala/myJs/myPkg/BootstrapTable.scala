@@ -3,6 +3,7 @@ package myJs.myPkg
 import org.querki.jsext._
 
 import scala.scalajs.js
+import myJs.Tool._
 import org.querki.jquery.JQuery
 
 import scala.language.implicitConversions
@@ -10,8 +11,8 @@ import scala.scalajs.js.JSConverters._
 
 
 /**
-  * Created by yz on 2019/3/14
-  */
+ * Created by yz on 2019/3/14
+ */
 trait BootstrapTableJQuery extends js.Object {
 
   def bootstrapTable(options: TableOptions): JQuery = scalajs.js.native
@@ -41,6 +42,12 @@ class TableOptionsBuilder(val dict: OptMap) extends JSOptionBuilder[TableOptions
   def exportOptions(v: ExportOptions) = jsOpt("exportOptions", v)
 
   def exportHiddenColumns(v: Boolean) = jsOpt("exportHiddenColumns", v)
+
+  def onAll(v: js.Function) = jsOpt("onAll", v)
+
+  def onPageChange(v: js.Function) = jsOpt("onPageChange", v)
+
+  def multipleSelectRow(v: Boolean) = jsOpt("multipleSelectRow", v)
 
 
 }
@@ -81,6 +88,8 @@ class ColumnOptionsBuilder(val dict: OptMap) extends JSOptionBuilder[ColumnOptio
   def titleTooltip(v: String) = jsOpt("titleTooltip", v)
 
   def formatter(v: js.Function) = jsOpt("formatter", v)
+
+  def checkbox(v: Boolean) = jsOpt("checkbox", v)
 
 }
 

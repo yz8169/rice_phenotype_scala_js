@@ -5,13 +5,15 @@ import java.nio.file.Files
 
 import dao.ModeDao
 import javax.inject.Inject
+import org.apache.commons.lang3.StringUtils
+import tool.Pojo.StatData
 import utils.Utils
 
 import scala.collection.mutable.ArrayBuffer
 
 /**
-  * Created by yz on 2019/1/18
-  */
+ * Created by yz on 2019/1/18
+ */
 class Tool @Inject()(modeDao: ModeDao) {
 
   def createTempDirectory(prefix: String) = {
@@ -31,7 +33,9 @@ class Tool @Inject()(modeDao: ModeDao) {
 
 object Tool {
 
-
+  def validByNumbers(numbers: Seq[String], map: Map[String, String]) = {
+    if (numbers.isEmpty) true else numbers.contains(map("number"))
+  }
 
 
 }

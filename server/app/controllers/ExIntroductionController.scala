@@ -74,9 +74,8 @@ class ExIntroductionController @Inject()(cc: ControllerComponents, exIntroductio
     val phenotype = data.phenotype
     exIntroductionDao.selectAll.map { rows =>
       val array = Utils.getArrayByTs(rows,"phenotype").filter { map =>
-        StringUtils.isNotBlank(map(phenotype)) && data.number.map { number =>
-          number.split(",").contains(map("number"))
-        }.getOrElse(true)
+        val b = Tool.validByNumbers(data.numbers, map)
+        StringUtils.isNotBlank(map(phenotype)) && b
       }
       val json = Json.toJson(array)
       Ok(json)

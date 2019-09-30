@@ -3,10 +3,11 @@ package controllers
 import java.io.File
 import java.nio.file.Files
 
-import dao.AccountDao
+import dao._
 import javax.inject.Inject
 import play.api.mvc.{AbstractController, ControllerComponents}
 import play.api.routing.JavaScriptReverseRouter
+import shared.Shared
 import tool.FormTool
 import utils.Utils
 
@@ -16,19 +17,22 @@ import scala.concurrent.ExecutionContext.Implicits.global
   * Created by yz on 2019/1/11
   */
 class AppController @Inject()(cc: ControllerComponents, accountDao: AccountDao,
-                              formTool: FormTool) extends AbstractController(cc) {
+                              formTool: FormTool,userDao: UserDao) extends AbstractController(cc) {
 
   def loginBefore = Action { implicit request =>
     Ok(views.html.login())
   }
 
   def login = Action.async { implicit request =>
-    val data = formTool.accountForm.bindFromRequest().get
-    accountDao.selectById1.map { x =>
-      if (data.account == x.account && data.password == x.password) {
-        Redirect(routes.AdminController.toIndex()).withSession("admin" -> data.account)
+    val data = formTool.userForm.bindFromRequest().get
+    accountDao.selectById1.zip(userDao.selectByUserData(data)).map { case (account, optionUser) =>
+      if (data.name == account.account && data.password == account.password) {
+        Redirect(routes.AdminController.userManageBefore()).addingToSession(Shared.adminStr -> data.name)
+      } else if (optionUser.isDefined) {
+        val user = optionUser.get
+        Redirect(routes.IndexController.toIndex()).addingToSession(Shared.userStr -> user.name, Shared.idStr -> user.id.toString)
       } else {
-        Redirect(routes.AppController.loginBefore()).flashing("info" -> "账号或密码错误!")
+        Redirect(routes.AppController.loginBefore()).flashing("info" -> "用户名或密码错误!", "class" -> Utils.errorClass)
       }
     }
   }
@@ -125,6 +129,16 @@ class AppController @Inject()(cc: ControllerComponents, accountDao: AccountDao,
         controllers.routes.javascript.ExIntroductionController.getDetailInfo,
         controllers.routes.javascript.ExIntroductionController.getAllNumber,
         controllers.routes.javascript.ExIntroductionController.getStatData,
+
+        controllers.routes.javascript.AdminController.getAllUser,
+        controllers.routes.javascript.AdminController.userNameCheck,
+        controllers.routes.javascript.AdminController.addUser,
+        controllers.routes.javascript.AdminController.deleteUserById,
+        controllers.routes.javascript.AdminController.getUserById,
+        controllers.routes.javascript.AdminController.updateUser,
+        controllers.routes.javascript.AdminController.getAllUserLimit,
+        controllers.routes.javascript.AdminController.refreshLimit,
+        controllers.routes.javascript.AdminController.limitUpdateBefore,
 
 
 

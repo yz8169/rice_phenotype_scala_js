@@ -32,30 +32,16 @@ object LocalSampleStat {
   @JSExport("init")
   def init = {
     $(":input[name='phenotype']").select2(Select2Options.data(samples.toJSArray))
-    refreshTypeahead
+    fillNumbers
 
   }
 
-  def refreshTypeahead = {
+  def fillNumbers = {
     val url = g.jsRoutes.controllers.LocalSampleController.getAllNumber().url.toString
     val ajaxSettings = JQueryAjaxSettings.url(url).`type`("get").success { (data, status, e) =>
       val numbers = data.asInstanceOf[js.Array[String]]
-      val updaterF = (y: Typeahead, item: String) => {
-        y.$element.`val`().toString.replaceFirst("[^,]*$", "") + item + ","
-      }
-
-      val matcherF = (y: Typeahead, item: String) => {
-        val input = y.query
-        val query = extractor(input)
-        if (query.isEmpty) {
-          false
-        } else {
-          ~item.toLowerCase.indexOf(query.toLowerCase)
-        }
-      }
-      val options = TypeaheadOptions.source(numbers).updater(updaterF).highlighter(highlighterF).matcher(matcherF)
-      $(":input[name='number']").typeahead(options)
-
+      val options=Select2Options.data(numbers).multiple(true)
+      $(":input[name='numbers[]']").select2(options)
     }
     $.ajax(ajaxSettings)
 

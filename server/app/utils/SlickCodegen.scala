@@ -20,7 +20,7 @@ object SlickCodegen {
     val url = "jdbc:mysql://localhost:3306/rice_phenotype?useUnicode=true&characterEncoding=UTF-8"
     val jdbcDriver = "com.mysql.jdbc.Driver"
     val user = "root"
-    val password = "123456"
+    val password = "Yingfei123"
 
     val db = MySQLProfile.api.Database.forURL(url, user, password)
     val dbio = MySQLProfile.createModel()
