@@ -1,22 +1,38 @@
-@(id: Int)(implicit request: play.api.mvc.RequestHeader)
-@admin.main("权限更新") {
+@(id:Option[Int])(implicit request: play.api.mvc.RequestHeader)
+@admin.main("权限管理") {
 	<div class="container">
 		<div class="row">
 			<div class="form-group col-sm-12">
 				<h2 class="page-heading"
 				style="text-align: left;
 					border-bottom: 5px solid #e9f3f4">
-					权限更新
+					权限管理
 				</h2>
 			</div>
 		</div>
 
+
+		<form class="registration-form form-horizontal" id="form" accept-charset="UTF-8">
+
+			<input id="userId" hidden value="@id">
+
+			<div class="form-group">
+				<label class="control-label col-sm-2">用户:</label>
+				<div class="col-sm-3">
+					<select name="name"  class="checkbox form-control" onchange="LimitUpdate.userChange(this)"></select>
+				</div>
+			</div>
+
+		</form>
+
+		<hr>
+
 		<ul id="myTab" class="nav nav-tabs">
 			<li class="active"><a href="#localSample" data-toggle="tab">
 				地方稻种</a></li>
-			<li><a href="#snpAddress" data-toggle="tab">育成品种</a></li>
-			<li><a href="#snpNation" data-toggle="tab">野生稻</a></li>
-			<li><a href="#snpNation" data-toggle="tab">外引种</a></li>
+			<li><a href="#breedSample" data-toggle="tab">育成品种</a></li>
+			<li><a href="#wildSample" data-toggle="tab">野生稻</a></li>
+			<li><a href="#exIntroductionSample" data-toggle="tab">外引种</a></li>
 
 		</ul>
 		<div id="myTabContent" class="tab-content">
@@ -28,81 +44,64 @@
 							<div class="table-responsive" id="tableContent">
 								<table class="display table table-bordered" id="table" data-pagination="true" data-search="true"
 								data-toolbar="#toolbar" data-page-list="[10, 25, 50, 100, all]" data-multiple-search="true">
-									<thead>
-										<tr>
-@*											<th data-field="number" data-sortable="true" data-formatter="LocalSampleManage.numberFmt">统一编号</th>*@
 
-										</tr>
-									</thead>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane fade" id="breedSample">
+				<div>
+
+					<div class="row">
+						<div class="col-sm-12">
+
+							<div class="table-responsive" id="tableContent">
+								<table class="display table table-bordered" id="breedTable" data-pagination="true" data-search="true"
+								data-toolbar="#toolbar" data-page-list="[10, 25, 50, 100, all]" data-multiple-search="true">
+
+								</table>
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+			</div>
+			<div class="tab-pane fade" id="wildSample">
+				<div>
+
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="table-responsive" id="tableContent">
+								<table class="display table table-bordered" id="wildTable" data-pagination="true" data-search="true"
+								data-toolbar="#toolbar" data-page-list="[10, 25, 50, 100, all]" data-multiple-search="true">
+
 								</table>
 							</div>
 
-
-
-
 						</div>
+
 					</div>
 				</div>
 			</div>
-			<div class="tab-pane fade" id="snpAddress">
+			<div class="tab-pane fade" id="exIntroductionSample">
 				<div>
-					<h5>说明：选取了前100条记录，拥有地理信息的记录条数为<span id="recordsNum"></span>。</h5>
 
 					<div class="row">
-						<div class="col-sm-6">
-							<div id="container" style="width: 400px;
-								height: 400px;"></div>
+						<div class="col-sm-12">
+							<div class="table-responsive" id="tableContent">
+								<table class="display table table-bordered" id="exIntroductionTable" data-pagination="true" data-search="true"
+								data-toolbar="#toolbar" data-page-list="[10, 25, 50, 100, all]" data-multiple-search="true">
 
-						</div>
-						<div class="col-sm-6">
-							<table class="display table table-bordered" id="addressTable" data-pagination="true" data-search="true"
-							data-page-list="[10, 25, 50, 100, all]" data-multiple-search="true">
-								<thead>
-									<tr>
-										<th data-field="address" >地理</th>
-										<th data-field="num" >条数</th>
-										<th data-field="percent" >占比</th>
-									</tr>
-								</thead>
-							</table>
+								</table>
+							</div>
 
 						</div>
 
 					</div>
-
 				</div>
-
-
-			</div>
-			<div class="tab-pane fade" id="snpNation">
-				<div>
-					<h5>说明：选取了前100条记录，拥有民族信息的记录条数为<span id="recordsNum">hello!</span>。</h5>
-
-					<div class="row">
-						<div class="col-sm-6">
-							<div id="container" style="width: 400px;
-								height: 400px;"></div>
-
-						</div>
-						<div class="col-sm-6">
-							<table class="display table table-bordered" id="nationTable" data-pagination="true" data-search="true"
-							data-page-list="[10, 25, 50, 100, all]" data-multiple-search="true">
-								<thead>
-									<tr>
-										<th data-field="nation" >民族</th>
-										<th data-field="num" >条数</th>
-										<th data-field="percent" >占比</th>
-									</tr>
-								</thead>
-							</table>
-
-						</div>
-
-					</div>
-
-
-				</div>
-
 			</div>
 		</div>
 

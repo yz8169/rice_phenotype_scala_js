@@ -15,11 +15,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 /**
   * Created by yz on 2019/5/8
   */
-class ExIntroductionController @Inject()(cc: ControllerComponents, exIntroductionDao: ExIntroductionDao,
-                                         formTool:FormTool,wildSampleDao: WildSampleDao) extends AbstractController(cc) {
+class ExIntroductionController @Inject()(cc: ControllerComponents, val exIntroductionDao: ExIntroductionDao,
+                                         val userLimitDao: UserLimitDao,
+                                         formTool:FormTool,wildSampleDao: WildSampleDao) extends
+  AbstractController(cc) with ExSampleTool with ExSampleToolWithLimit{
 
   def getAllPhenotype = Action.async { implicit request =>
-    exIntroductionDao.selectAll.map { rows =>
+    selectAll.map { rows =>
       val phenotypeNames = Shared.exIntroductionPhenotypeNames
       val array=Utils.getArrayByTs(rows,"phenotype")
       val json = Json.toJson(array)
@@ -64,7 +66,7 @@ class ExIntroductionController @Inject()(cc: ControllerComponents, exIntroductio
   }
 
   def getAllNumber = Action.async { implicit request =>
-    exIntroductionDao.selectAllNumber.map { x =>
+    selectAllNumber.map { x =>
       Ok(Json.toJson(x))
     }
   }
@@ -72,7 +74,7 @@ class ExIntroductionController @Inject()(cc: ControllerComponents, exIntroductio
   def getStatData = Action.async { implicit request =>
     val data = formTool.statForm.bindFromRequest().get
     val phenotype = data.phenotype
-    exIntroductionDao.selectAll.map { rows =>
+    selectAll.map { rows =>
       val array = Utils.getArrayByTs(rows,"phenotype").filter { map =>
         val b = Tool.validByNumbers(data.numbers, map)
         StringUtils.isNotBlank(map(phenotype)) && b

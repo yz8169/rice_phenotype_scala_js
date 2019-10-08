@@ -6,8 +6,8 @@ import play.api.data.Forms._
 import tool.Pojo._
 
 /**
-  * Created by yz on 2019/1/18
-  */
+ * Created by yz on 2019/1/18
+ */
 class FormTool {
 
   case class AccountData(account: String, password: String)
@@ -59,10 +59,13 @@ class FormTool {
     )(NumbersData.apply)(NumbersData.unapply)
   )
 
- val userLimitForm = Form(
+  val userLimitForm = Form(
     mapping(
       "id" -> number,
-      "numbers" -> seq(text)
+      "localNumbers" -> seq(text),
+      "breedNumbers" -> seq(text),
+      "wildNumbers" -> seq(text),
+      "exIntroductionNumbers" -> seq(text)
     )(UserLimitData.apply)(UserLimitData.unapply)
   )
 
@@ -103,7 +106,7 @@ class FormTool {
   case class ExIntroductionData(number: String, warehouseNumber: String, unitNumber: String, name: String, oldName: String,
                                 family: String, genus: String, scientificName: String, sourceArea: String, seedSource: String,
                                 storeUnit: String, originalNumber: String, storeUnit2: String, province: String, sampleKind: String,
-                                phenotype: String,comment: String)
+                                phenotype: String, comment: String)
 
   val exIntroductionForm = Form(
     mapping(
@@ -175,6 +178,12 @@ class FormTool {
     mapping(
       "id" -> number
     )(IdData.apply)(IdData.unapply)
+  )
+
+  val idOpForm = Form(
+    mapping(
+      "id" -> optional(number)
+    )(IdOpData.apply)(IdOpData.unapply)
   )
 
 

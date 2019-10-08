@@ -24,10 +24,12 @@ POST        /ricePhenotype/admin/addUser                                        
 GET         /ricePhenotype/admin/deleteUserById                                        controllers.AdminController.deleteUserById
 GET         /ricePhenotype/admin/getUserById                                           controllers.AdminController.getUserById
 POST        /ricePhenotype/admin/updateUser                                            controllers.AdminController.updateUser
-GET        /ricePhenotype/admin/limitManageBefore                                            controllers.AdminController.limitManageBefore
-GET        /ricePhenotype/admin/getAllUserLimit                                            controllers.AdminController.getAllUserLimit
-POST        /ricePhenotype/admin/refreshLimit                                            controllers.AdminController.refreshLimit
-GET        /ricePhenotype/admin/limitUpdateBefore                                            controllers.AdminController.limitUpdateBefore
+GET         /ricePhenotype/admin/limitManageBefore                                     controllers.AdminController.limitManageBefore
+GET         /ricePhenotype/admin/getAllUserLimit                                       controllers.AdminController.getAllUserLimit
+POST        /ricePhenotype/admin/refreshLimit                                          controllers.AdminController.refreshLimit
+GET         /ricePhenotype/admin/limitUpdateBefore                                     controllers.AdminController.limitUpdateBefore
+GET         /ricePhenotype/admin/getUserLimitById                                      controllers.AdminController.getUserLimitById
+GET         /ricePhenotype/admin/getAllUserNames                                      controllers.AdminController.getAllUserNames
 
 GET         /ricePhenotype/user/logout                                                 controllers.UserController.logout
 
@@ -46,6 +48,7 @@ GET         /ricePhenotype/admin/localSample/manageAppendixBefore               
 POST        /ricePhenotype/admin/localSample/addAppendix                               controllers.adminC.LocalSampleController.addAppendix
 GET         /ricePhenotype/admin/localSample/deleteAppendix                            controllers.adminC.LocalSampleController.deleteAppendix
 POST        /ricePhenotype/admin/localSample/updateDesc                                controllers.adminC.LocalSampleController.updateDesc
+GET        /ricePhenotype/admin/localSample/getAllPhenotype                                controllers.adminC.LocalSampleController.getAllPhenotype
 
 GET         /ricePhenotype/admin/breedSample/addSamplePhenotypeByFileBefore            controllers.adminC.BreedSampleController.addSamplePhenotypeByFileBefore
 POST        /ricePhenotype/admin/breedSample/addSamplePhenotypeByFile                  controllers.adminC.BreedSampleController.addSamplePhenotypeByFile
@@ -62,27 +65,30 @@ GET         /ricePhenotype/admin/breedSample/deleteByNumber                     
 GET         /ricePhenotype/admin/breedSample/updateSamplePhenotypeBefore               controllers.adminC.BreedSampleController.updateSamplePhenotypeBefore
 POST        /ricePhenotype/admin/breedSample/updateSamplePhenotype                     controllers.adminC.BreedSampleController.updateSamplePhenotype
 GET         /ricePhenotype/admin/breedSample/getDetailInfo                             controllers.adminC.BreedSampleController.getDetailInfo
+GET         /ricePhenotype/admin/breedSample/getAllPhenotype                             controllers.adminC.BreedSampleController.getAllPhenotype
 
-GET         /ricePhenotype/admin/myJs.wildSample/addSamplePhenotypeBefore              controllers.adminC.WildSampleController.addSamplePhenotypeBefore
-GET         /ricePhenotype/admin/myJs.wildSample/addSamplePhenotypeByFileBefore        controllers.adminC.WildSampleController.addSamplePhenotypeByFileBefore
-POST        /ricePhenotype/admin/myJs.wildSample/addSamplePhenotypeByFile              controllers.adminC.WildSampleController.addSamplePhenotypeByFile
-GET         /ricePhenotype/admin/myJs.wildSample/manageSamplePhenotypeBefore           controllers.adminC.WildSampleController.manageSamplePhenotypeBefore
-GET         /ricePhenotype/admin/myJs.wildSample/deleteByNumber                        controllers.adminC.WildSampleController.deleteByNumber
-POST        /ricePhenotype/admin/myJs.wildSample/deleteSamplePhenotypes                controllers.adminC.WildSampleController.deleteSamplePhenotypes
-GET         /ricePhenotype/admin/myJs.wildSample/numberCheck                           controllers.adminC.WildSampleController.numberCheck
-POST        /ricePhenotype/admin/myJs.wildSample/addSamplePhenotype                    controllers.adminC.WildSampleController.addSamplePhenotype
-GET         /ricePhenotype/admin/myJs.wildSample/updateSamplePhenotypeBefore           controllers.adminC.WildSampleController.updateSamplePhenotypeBefore
-POST        /ricePhenotype/admin/myJs.wildSample/updateSamplePhenotype                 controllers.adminC.WildSampleController.updateSamplePhenotype
-GET         /ricePhenotype/admin/myJs.wildSample/manageAppendixBefore                  controllers.adminC.WildSampleController.manageAppendixBefore
-GET         /ricePhenotype/admin/myJs.wildSample/getDetailInfo                         controllers.adminC.WildSampleController.getDetailInfo
-GET         /ricePhenotype/admin/myJs.wildSample/manageAppendixBefore                  controllers.adminC.WildSampleController.manageAppendixBefore
-POST        /ricePhenotype/admin/myJs.wildSample/addAppendix                           controllers.adminC.WildSampleController.addAppendix
-GET         /ricePhenotype/admin/myJs.wildSample/deleteAppendix                        controllers.adminC.WildSampleController.deleteAppendix
-POST        /ricePhenotype/admin/myJs.wildSample/updateDesc                            controllers.adminC.WildSampleController.updateDesc
+GET         /ricePhenotype/admin/wildSample/addSamplePhenotypeBefore              controllers.adminC.WildSampleController.addSamplePhenotypeBefore
+GET         /ricePhenotype/admin/wildSample/addSamplePhenotypeByFileBefore        controllers.adminC.WildSampleController.addSamplePhenotypeByFileBefore
+POST        /ricePhenotype/admin/wildSample/addSamplePhenotypeByFile              controllers.adminC.WildSampleController.addSamplePhenotypeByFile
+GET         /ricePhenotype/admin/wildSample/manageSamplePhenotypeBefore           controllers.adminC.WildSampleController.manageSamplePhenotypeBefore
+GET         /ricePhenotype/admin/wildSample/deleteByNumber                        controllers.adminC.WildSampleController.deleteByNumber
+POST        /ricePhenotype/admin/wildSample/deleteSamplePhenotypes                controllers.adminC.WildSampleController.deleteSamplePhenotypes
+GET         /ricePhenotype/admin/wildSample/numberCheck                           controllers.adminC.WildSampleController.numberCheck
+POST        /ricePhenotype/admin/wildSample/addSamplePhenotype                    controllers.adminC.WildSampleController.addSamplePhenotype
+GET         /ricePhenotype/admin/wildSample/updateSamplePhenotypeBefore           controllers.adminC.WildSampleController.updateSamplePhenotypeBefore
+POST        /ricePhenotype/admin/wildSample/updateSamplePhenotype                 controllers.adminC.WildSampleController.updateSamplePhenotype
+GET         /ricePhenotype/admin/wildSample/manageAppendixBefore                  controllers.adminC.WildSampleController.manageAppendixBefore
+GET         /ricePhenotype/admin/wildSample/getDetailInfo                         controllers.adminC.WildSampleController.getDetailInfo
+GET         /ricePhenotype/admin/wildSample/manageAppendixBefore                  controllers.adminC.WildSampleController.manageAppendixBefore
+POST        /ricePhenotype/admin/wildSample/addAppendix                           controllers.adminC.WildSampleController.addAppendix
+GET         /ricePhenotype/admin/wildSample/deleteAppendix                        controllers.adminC.WildSampleController.deleteAppendix
+POST        /ricePhenotype/admin/wildSample/updateDesc                            controllers.adminC.WildSampleController.updateDesc
+GET        /ricePhenotype/admin/wildSample/getAllPhenotype                            controllers.adminC.WildSampleController.getAllPhenotype
 
-GET         /ricePhenotype/user/wildSample/getAllPhenotype                             controllers.WildSampleController.getAllPhenotype
-POST        /ricePhenotype/user/wildSample/getSamplePhenotypeInfo                      controllers.WildSampleController.getSamplePhenotypeInfo
-POST        /ricePhenotype/user/wildSample/getAllFiles                                 controllers.WildSampleController.getAllFiles
+GET         /ricePhenotype/wildSample/getAllPhenotype                                  controllers.WildSampleController.getAllPhenotype
+POST        /ricePhenotype/wildSample/getSamplePhenotypeInfo                      controllers.WildSampleController.getSamplePhenotypeInfo
+POST        /ricePhenotype/wildSample/getAllFiles                                 controllers.WildSampleController.getAllFiles
+
 GET         /ricePhenotype/user/wildSample/viewBefore                                  controllers.WildSampleController.viewBefore
 GET         /ricePhenotype/user/wildSample/getDetailInfo                               controllers.WildSampleController.getDetailInfo
 GET         /ricePhenotype/user/wildSample/searchBefore                                controllers.WildSampleController.searchBefore
@@ -92,26 +98,25 @@ POST        /ricePhenotype/user/wildSample/getStatData                          
 
 GET         /ricePhenotype/localSample/getAllNumber                                    controllers.LocalSampleController.getAllNumber
 GET         /ricePhenotype/localSample/getAllPhenotype                                 controllers.LocalSampleController.getAllPhenotype
+POST        /ricePhenotype/localSample/getSamplePhenotypeInfo                     controllers.LocalSampleController.getSamplePhenotypeInfo
+POST        /ricePhenotype/localSample/getAllFiles                                controllers.LocalSampleController.getAllFiles
 
+GET         /ricePhenotype/user/localSample/viewBefore                                 controllers.LocalSampleController.viewBefore
+GET         /ricePhenotype/user/localSample/getDetailInfo                              controllers.LocalSampleController.getDetailInfo
+GET         /ricePhenotype/user/localSample/searchBefore                               controllers.LocalSampleController.searchBefore
+GET         /ricePhenotype/user/localSample/statBefore                                 controllers.LocalSampleController.statBefore
+POST        /ricePhenotype/user/localSample/getStatData                                controllers.LocalSampleController.getStatData
 
-GET         /ricePhenotype/user/localSample/viewBefore                                      controllers.LocalSampleController.viewBefore
-GET         /ricePhenotype/user/localSample/getDetailInfo                                   controllers.LocalSampleController.getDetailInfo
-POST        /ricePhenotype/user/localSample/getSamplePhenotypeInfo                          controllers.LocalSampleController.getSamplePhenotypeInfo
-POST        /ricePhenotype/user/localSample/getAllFiles                                     controllers.LocalSampleController.getAllFiles
-GET         /ricePhenotype/user/localSample/searchBefore                                    controllers.LocalSampleController.searchBefore
-GET         /ricePhenotype/user/localSample/statBefore                                      controllers.LocalSampleController.statBefore
-POST        /ricePhenotype/user/localSample/getStatData                                     controllers.LocalSampleController.getStatData
+GET         /ricePhenotype/breedSample/getAllPhenotype                                 controllers.BreedSampleController.getAllPhenotype
+POST        /ricePhenotype/breedSample/getSamplePhenotypeInfo                     controllers.BreedSampleController.getSamplePhenotypeInfo
+POST        /ricePhenotype/breedSample/getAllFiles                                controllers.BreedSampleController.getAllFiles
 
-GET         /ricePhenotype/user/breedSample/viewBefore                                      controllers.BreedSampleController.viewBefore
-GET         /ricePhenotype/user/breedSample/getAllPhenotype                                 controllers.BreedSampleController.getAllPhenotype
-GET         /ricePhenotype/user/breedSample/getDetailInfo                                   controllers.BreedSampleController.getDetailInfo
-POST        /ricePhenotype/user/breedSample/getSamplePhenotypeInfo                          controllers.BreedSampleController.getSamplePhenotypeInfo
-POST        /ricePhenotype/user/breedSample/getAllFiles                                     controllers.BreedSampleController.getAllFiles
-GET         /ricePhenotype/user/breedSample/searchBefore                                    controllers.BreedSampleController.searchBefore
-GET         /ricePhenotype/user/breedSample/getAllPhenotype                                 controllers.BreedSampleController.getAllPhenotype
-POST        /ricePhenotype/user/breedSample/getStatData                                     controllers.BreedSampleController.getStatData
-GET         /ricePhenotype/user/breedSample/getAllNumber                                    controllers.BreedSampleController.getAllNumber
-GET         /ricePhenotype/user/breedSample/statBefore                                      controllers.BreedSampleController.statBefore
+GET         /ricePhenotype/user/breedSample/viewBefore                                 controllers.BreedSampleController.viewBefore
+GET         /ricePhenotype/user/breedSample/getDetailInfo                              controllers.BreedSampleController.getDetailInfo
+GET         /ricePhenotype/user/breedSample/searchBefore                               controllers.BreedSampleController.searchBefore
+POST        /ricePhenotype/user/breedSample/getStatData                                controllers.BreedSampleController.getStatData
+GET         /ricePhenotype/user/breedSample/getAllNumber                               controllers.BreedSampleController.getAllNumber
+GET         /ricePhenotype/user/breedSample/statBefore                                 controllers.BreedSampleController.statBefore
 
 GET         /ricePhenotype/admin/ExIntroduction/addByFileBefore                        controllers.adminC.ExIntroductionController.addByFileBefore
 POST        /ricePhenotype/admin/ExIntroduction/addByFile                              controllers.adminC.ExIntroductionController.addByFile
@@ -128,17 +133,20 @@ POST        /ricePhenotype/admin/ExIntroduction/addAppendix                     
 GET         /ricePhenotype/admin/ExIntroduction/deleteAppendix                         controllers.adminC.ExIntroductionController.deleteAppendix
 POST        /ricePhenotype/admin/ExIntroduction/updateDesc                             controllers.adminC.ExIntroductionController.updateDesc
 GET         /ricePhenotype/admin/ExIntroduction/getDetailInfo                          controllers.adminC.ExIntroductionController.getDetailInfo
+GET         /ricePhenotype/admin/ExIntroduction/getAllPhenotype                          controllers.adminC.ExIntroductionController.getAllPhenotype
 
 
-GET         /ricePhenotype/user/ExIntroduction/getAllPhenotype                              controllers.ExIntroductionController.getAllPhenotype
-POST        /ricePhenotype/user/ExIntroduction/getSamplePhenotypeInfo                       controllers.ExIntroductionController.getSamplePhenotypeInfo
-POST        /ricePhenotype/user/ExIntroduction/getAllFiles                                  controllers.ExIntroductionController.getAllFiles
-GET         /ricePhenotype/user/ExIntroduction/viewBefore                                   controllers.ExIntroductionController.viewBefore
-GET         /ricePhenotype/user/ExIntroduction/getDetailInfo                                controllers.ExIntroductionController.getDetailInfo
-GET         /ricePhenotype/user/ExIntroduction/searchBefore                                 controllers.ExIntroductionController.searchBefore
-GET         /ricePhenotype/user/ExIntroduction/statBefore                                   controllers.ExIntroductionController.statBefore
-GET         /ricePhenotype/user/ExIntroduction/getAllNumber                                 controllers.ExIntroductionController.getAllNumber
-POST        /ricePhenotype/user/ExIntroduction/getStatData                                  controllers.ExIntroductionController.getStatData
+GET         /ricePhenotype/ExIntroduction/getAllPhenotype                              controllers.ExIntroductionController.getAllPhenotype
+POST        /ricePhenotype/ExIntroduction/getSamplePhenotypeInfo                  controllers.ExIntroductionController.getSamplePhenotypeInfo
+POST        /ricePhenotype/ExIntroduction/getAllFiles                             controllers.ExIntroductionController.getAllFiles
+
+
+GET         /ricePhenotype/user/ExIntroduction/viewBefore                              controllers.ExIntroductionController.viewBefore
+GET         /ricePhenotype/user/ExIntroduction/getDetailInfo                           controllers.ExIntroductionController.getDetailInfo
+GET         /ricePhenotype/user/ExIntroduction/searchBefore                            controllers.ExIntroductionController.searchBefore
+GET         /ricePhenotype/user/ExIntroduction/statBefore                              controllers.ExIntroductionController.statBefore
+GET         /ricePhenotype/user/ExIntroduction/getAllNumber                            controllers.ExIntroductionController.getAllNumber
+POST        /ricePhenotype/user/ExIntroduction/getStatData                             controllers.ExIntroductionController.getStatData
 
 
 

@@ -41,6 +41,9 @@ class LocalSampleDao @Inject()(protected val dbConfigProvider: DatabaseConfigPro
 
   def selectAll = db.run(LocalSample.result)
 
+  def selectAll(numbers:Seq[String]) = db.run(LocalSample.
+    filter(_.number.inSetBind(numbers)).result)
+
   def selectAllNumber = db.run(LocalSample.map(_.number).result)
 
   def deleteByNumber(number: String) = db.run(LocalSample.filter(_.number === number).delete).map(_ => ())

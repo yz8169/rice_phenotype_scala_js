@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils
 import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, ControllerComponents}
 import shared.Shared
-import tool.{FormTool, Tool}
+import tool.{ExSampleTool, ExSampleToolWithLimit, FormTool, Tool}
 import utils.Utils
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -19,7 +19,8 @@ import scala.concurrent.Future
 /**
   * Created by yz on 2019/5/5
   */
-class ExIntroductionController @Inject()(cc: ControllerComponents, exIntroductionDao: ExIntroductionDao,
+class ExIntroductionController @Inject()(cc: ControllerComponents, val exIntroductionDao: ExIntroductionDao,
+                                         val userLimitDao: UserLimitDao,
                                          formTool: FormTool, tool: Tool) extends
   AbstractController(cc) {
 
@@ -194,6 +195,16 @@ class ExIntroductionController @Inject()(cc: ControllerComponents, exIntroductio
       exIntroductionDao.update(newRow)
     }.map { x =>
       Ok(Json.toJson("success"))
+    }
+
+  }
+
+  def getAllPhenotype = Action.async { implicit request =>
+    exIntroductionDao.selectAll.map { rows =>
+      val phenotypeNames = Shared.exIntroductionPhenotypeNames
+      val array=Utils.getArrayByTs(rows,"phenotype")
+      val json = Json.toJson(array)
+      Ok(json)
     }
 
   }

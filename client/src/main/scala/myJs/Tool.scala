@@ -1,5 +1,6 @@
 package myJs
 
+import myJs.Utils.g
 import myJs.myPkg._
 import org.querki.jquery.$
 import org.scalajs.dom.raw.ProgressEvent
@@ -25,6 +26,15 @@ object Tool {
     img(src := "/assets/images/running2.gif", width := 30, height := 20, cls := "runningImage")
   ).render
 
+  def myElement(info:String)={
+    div(id := "content")(
+      span(id := "info")(info),
+      " ",
+      img(src := "/assets/images/running2.gif", width := 30, height := 20, cls := "runningImage")
+    ).render
+  }
+  val loadingElement=myElement("正在加载")
+
   def extractor(query: String) = {
     val result = js.RegExp("([^,]+)$").exec(query)
     if (result != null && result(1).isDefined) {
@@ -38,6 +48,56 @@ object Tool {
     val query = extractor(input).replaceAll("[\\-\\[\\]{}()*+?.,\\\\^$|#\\s]", "\\$&")
     item.replaceAll(s"(?i)${query}", s"<strong>${query}</strong>")
   }
+
+  def numberA(v: String) = {
+    val manageUrl = g.jsRoutes.controllers.adminC.LocalSampleController.getDetailInfo().url.toString
+    val manageStr = a(
+      title := "详细信息",
+      cursor.pointer,
+      href := s"${manageUrl}?number=${v}",
+      target := "_blank",
+      v
+    )
+    Array(manageStr).mkString("&nbsp;")
+  }
+
+  def breedNumberA(v: String) = {
+    val manageUrl = g.jsRoutes.controllers.adminC.BreedSampleController.getDetailInfo().url.toString
+    val manageStr = a(
+      title := "详细信息",
+      cursor.pointer,
+      href := s"${manageUrl}?number=${v}",
+      target := "_blank",
+      v
+    )
+    Array(manageStr).mkString("&nbsp;")
+  }
+
+  def wildNumberA(v: String) = {
+    val manageUrl = g.jsRoutes.controllers.adminC.WildSampleController.getDetailInfo().url.toString
+    val manageStr = a(
+      title := "详细信息",
+      cursor.pointer,
+      href := s"${manageUrl}?number=${v}",
+      target := "_blank",
+      v.toString
+    )
+    Array(manageStr).mkString("&nbsp;")
+  }
+
+  def exNumberA(v: String) = {
+    val manageUrl = g.jsRoutes.controllers.adminC.ExIntroductionController.getDetailInfo().url.toString
+    val manageStr = a(
+      title := "详细信息",
+      cursor.pointer,
+      href := s"${manageUrl}?number=${v}",
+      target := "_blank",
+      v
+    )
+    Array(manageStr).mkString("&nbsp;")
+  }
+
+
 
 
 }

@@ -8,6 +8,7 @@ import shared.Shared
 import scala.scalajs.js
 import scala.scalajs.js.annotation._
 import myJs.admin.localSample.Manage
+import myJs.myPkg.Implicits._
 
 
 /**
@@ -19,7 +20,17 @@ object LocalSampleView {
   @JSExport("init")
   def init = {
     refreshTableView
-    Manage.refreshTableData()
+    refreshTableData()
+
+  }
+
+  def refreshTableData(f: () => js.Any = () => ()) = {
+    val url = g.jsRoutes.controllers.LocalSampleController.getAllPhenotype().url.toString
+    val ajaxSettings = JQueryAjaxSettings.url(url).`type`("get") success { (data, status, e) =>
+      $("#table").bootstrapTable("load", data)
+      f()
+    }
+    $.ajax(ajaxSettings)
 
   }
 

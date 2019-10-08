@@ -13,19 +13,22 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 
 /**
-  * Created by yz on 2019/5/8
-  */
-class WildSampleController @Inject()(cc: ControllerComponents, wildSampleDao: WildSampleDao,formTool:FormTool) extends AbstractController(cc) {
+ * Created by yz on 2019/5/8
+ */
+class WildSampleController @Inject()(cc: ControllerComponents, val wildSampleDao: WildSampleDao,
+                                     val userLimitDao: UserLimitDao,
+                                     formTool: FormTool) extends
+  AbstractController(cc) with WildSampleTool with WildSampleToolWithLimit {
 
   def getAllPhenotype = Action.async { implicit request =>
-    wildSampleDao.selectAll.map { rows =>
+   selectAll.map { rows =>
       val phenotypeNames = Shared.wildSamplePhenotypeNames
       val array = rows.map { row =>
         val map = Utils.str2Map(row.phenotype)
         val newMap = phenotypeNames.map { x =>
           (x, map.getOrElse(x, ""))
         }.toMap
-        Map("number" -> row.number,"source"->row.source, "comment" -> row.comment) ++ newMap
+        Map("number" -> row.number, "source" -> row.source, "comment" -> row.comment) ++ newMap
       }
       val json = Json.toJson(array)
       Ok(json)
@@ -69,7 +72,7 @@ class WildSampleController @Inject()(cc: ControllerComponents, wildSampleDao: Wi
   }
 
   def getAllNumber = Action.async { implicit request =>
-    wildSampleDao.selectAllNumber.map { x =>
+    selectAllNumber.map { x =>
       Ok(Json.toJson(x))
     }
   }
@@ -77,7 +80,7 @@ class WildSampleController @Inject()(cc: ControllerComponents, wildSampleDao: Wi
   def getStatData = Action.async { implicit request =>
     val data = formTool.statForm.bindFromRequest().get
     val phenotype = data.phenotype
-    wildSampleDao.selectAll.map { rows =>
+    selectAll.map { rows =>
       val array = rows.map { row =>
         val map = Utils.str2Map(row.phenotype)
         Map("number" -> row.number, data.phenotype -> map.getOrElse(phenotype, ""))
@@ -90,7 +93,6 @@ class WildSampleController @Inject()(cc: ControllerComponents, wildSampleDao: Wi
     }
 
   }
-
 
 
 }

@@ -189,5 +189,21 @@ class BreedSampleController @Inject()(cc: ControllerComponents, localSampleDao: 
     Ok(views.html.admin.breedSample.detailInfo(data.number))
   }
 
+  def getAllPhenotype = Action.async { implicit request =>
+    breedSampleDao.selectAll.map { rows =>
+      val phenotypeNames = Shared.breedSamplePhenotypeNames
+      val array = rows.map { row =>
+        val map = Utils.str2Map(row.phenotype)
+        val newMap = phenotypeNames.map { x =>
+          (x, map.getOrElse(x, ""))
+        }.toMap
+        Map("number" -> row.number, "name" -> row.name, "comment" -> row.comment) ++ newMap
+      }
+      val json = Json.toJson(array)
+      Ok(json)
+    }
+
+  }
+
 
 }

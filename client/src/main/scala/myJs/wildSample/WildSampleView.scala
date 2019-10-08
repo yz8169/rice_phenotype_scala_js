@@ -8,6 +8,7 @@ import shared.Shared
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation._
+import myJs.myPkg.Implicits._
 
 
 /**
@@ -20,9 +21,20 @@ object WildSampleView {
   @JSExport("init")
   def init = {
     refreshTableView
-    WildSampleManage.refreshTableData()
+    refreshTableData()
 
   }
+
+  def refreshTableData(f: () => js.Any = () => ()) = {
+    val url = g.jsRoutes.controllers.WildSampleController.getAllPhenotype().url.toString
+    val ajaxSettings = JQueryAjaxSettings.url(url).`type`("get") success { (data, status, e) =>
+      $("#table").bootstrapTable("load", data)
+      f()
+    }
+    $.ajax(ajaxSettings)
+
+  }
+
 
   def refreshTableView = {
     val phenotypeNames = Shared.wildSamplePhenotypeNames

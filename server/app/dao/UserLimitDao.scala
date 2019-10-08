@@ -40,8 +40,8 @@ class UserLimitDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
 
   def deleteById(id: Int): Future[Unit] = db.run(UserLimit.filter(_.id === id).delete).map(_ => ())
 
-//  def selectById(id: Int): Future[UserRow] = db.run(User.
-//    filter(_.id === id).result.head)
+  def selectById(id: Int)= db.run(UserLimit.
+    filter(_.id === id).result.head)
 
   def update(row: UserLimitRow): Future[Unit] = db.run(UserLimit.filter(_.id === row.id).update(row)).
     map(_ => ())

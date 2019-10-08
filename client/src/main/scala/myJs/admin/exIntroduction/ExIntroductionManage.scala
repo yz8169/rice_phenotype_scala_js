@@ -79,7 +79,7 @@ object ExIntroductionManage {
   }
 
   def refreshTableData(f: () => js.Any = () => ()) = {
-    val url = g.jsRoutes.controllers.ExIntroductionController.getAllPhenotype().url.toString
+    val url = g.jsRoutes.controllers.adminC.ExIntroductionController.getAllPhenotype().url.toString
     val ajaxSettings = JQueryAjaxSettings.url(url).`type`("get") success { (data, status, e) =>
       $("#table").bootstrapTable("load", data)
       f()

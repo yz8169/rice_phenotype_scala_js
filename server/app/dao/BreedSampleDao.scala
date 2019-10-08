@@ -9,8 +9,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 /**
-  * Created by yz on 2019/1/18
-  */
+ * Created by yz on 2019/1/18
+ */
 class BreedSampleDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends
   HasDatabaseConfigProvider[JdbcProfile] {
 
@@ -34,11 +34,14 @@ class BreedSampleDao @Inject()(protected val dbConfigProvider: DatabaseConfigPro
       val delete = BreedSample.filter(_.number.inSetBind(numbers)).delete
       val insertAll = BreedSample ++= rows
       delete.flatMap(_ => insertAll)
-    }.transactionally
+      }.transactionally
     db.run(action).map(_ => ())
   }
 
   def selectAll = db.run(BreedSample.result)
+
+  def selectAll(numbers: Seq[String]) = db.run(BreedSample.
+    filter(_.number.inSetBind(numbers)).result)
 
   def deleteByNumber(number: String) = db.run(BreedSample.filter(_.number === number).delete).map(_ => ())
 

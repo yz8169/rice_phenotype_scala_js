@@ -128,17 +128,36 @@ class AdminController @Inject()(cc: ControllerComponents, formTool: FormTool,
   }
 
   def refreshLimit = Action.async { implicit request =>
-    val data=formTool.userLimitForm.bindFromRequest().get
-    println(data)
-    val row=UserLimitRow(data.id,data.numbers.mkString(";"),"","","")
+    val data = formTool.userLimitForm.bindFromRequest().get
+    val row = UserLimitRow(data.id, data.localNumbers.mkString(";"), data.breedNumbers.mkString(";"),
+      data.wildNumbers.mkString(";"), data.exIntroductionNumbers.mkString(";"))
     userLimitDao.update(row).map { x =>
       Ok(Json.toJson("success"))
     }
   }
 
+
   def limitUpdateBefore = Action { implicit request =>
-    val data=formTool.idForm.bindFromRequest().get
+    val data = formTool.idOpForm.bindFromRequest().get
     Ok(views.html.admin.limitUpdate(data.id))
+  }
+
+  def getUserLimitById = Action.async { implicit request =>
+    val data = formTool.idForm.bindFromRequest().get
+    userDao.selectById(data.id).zip(userLimitDao.selectById(data.id)).map { case (user, userLimit) =>
+      val t = (user, userLimit)
+      val map = Utils.getMapByT(t)
+      Ok(Json.toJson(map))
+    }
+  }
+
+  def getAllUserNames = Action.async { implicit request =>
+    userDao.selectAll.map { users =>
+      val array = users.map { user =>
+        Map("id" -> user.id.toString, "text" -> user.name)
+      }
+      Ok(Json.toJson(array))
+    }
   }
 
 

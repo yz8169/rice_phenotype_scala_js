@@ -72,6 +72,16 @@ object UserManage {
           em(cls := "fa fa-repeat")
         )
       )
+      val updateUrl = g.jsRoutes.controllers.AdminController.limitUpdateBefore().url.toString
+      val updateStr = a(
+        title := "修改权限",
+        cursor.pointer,
+        href := s"${updateUrl}?id=${row("id")}",
+        target := "_blank",
+        span(
+          em(cls := "fa fa-edit")
+        )
+      )
       val deleteStr = a(
         title := "删除",
         cursor.pointer,
@@ -81,7 +91,7 @@ object UserManage {
           em(cls := "fa fa-close")
         )
       )
-      Array(resetStr, deleteStr).mkString("&nbsp;")
+      Array(resetStr,updateStr, deleteStr).mkString("&nbsp;")
   }
 
   @JSExport("addShow")

@@ -8,8 +8,8 @@ import slick.jdbc.JdbcProfile
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
-  * Created by yz on 2019/1/18
-  */
+ * Created by yz on 2019/1/18
+ */
 class WildSampleDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends
   HasDatabaseConfigProvider[JdbcProfile] {
 
@@ -33,11 +33,14 @@ class WildSampleDao @Inject()(protected val dbConfigProvider: DatabaseConfigProv
       val delete = WildSample.filter(_.number.inSetBind(numbers)).delete
       val insertAll = WildSample ++= rows
       delete.flatMap(_ => insertAll)
-    }.transactionally
+      }.transactionally
     db.run(action).map(_ => ())
   }
 
   def selectAll = db.run(WildSample.result)
+
+  def selectAll(numbers: Seq[String]) = db.run(WildSample.
+    filter(_.number.inSetBind(numbers)).result)
 
   def deleteByNumber(number: String) = db.run(WildSample.filter(_.number === number).delete).map(_ => ())
 
@@ -55,7 +58,6 @@ class WildSampleDao @Inject()(protected val dbConfigProvider: DatabaseConfigProv
     filter(_.number === number).result.headOption)
 
   def selectAllNumber = db.run(WildSample.map(_.number).result)
-
 
 
 }

@@ -8,8 +8,8 @@ import slick.jdbc.JdbcProfile
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
-  * Created by yz on 2019/1/18
-  */
+ * Created by yz on 2019/1/18
+ */
 class ExIntroductionDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends
   HasDatabaseConfigProvider[JdbcProfile] {
 
@@ -33,11 +33,14 @@ class ExIntroductionDao @Inject()(protected val dbConfigProvider: DatabaseConfig
       val delete = ExIntroduction.filter(_.number.inSetBind(numbers)).delete
       val insertAll = ExIntroduction ++= rows
       delete.flatMap(_ => insertAll)
-    }.transactionally
+      }.transactionally
     db.run(action).map(_ => ())
   }
 
   def selectAll = db.run(ExIntroduction.result)
+
+  def selectAll(numbers: Seq[String]) = db.run(ExIntroduction.
+    filter(_.number.inSetBind(numbers)).result)
 
   def deleteByNumber(number: String) = db.run(ExIntroduction.filter(_.number === number).delete).map(_ => ())
 

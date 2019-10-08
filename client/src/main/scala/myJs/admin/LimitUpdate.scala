@@ -1,13 +1,14 @@
 package myJs.admin
 
 import com.karasiq.bootstrap.Bootstrap.default._
+import myJs.Tool
 import myJs.Tool.{layerOptions, myElement}
 import myJs.Utils._
 import myJs.myPkg.Implicits._
 import myJs.myPkg._
-import org.querki.jquery.{$, JQueryAjaxSettings}
+import org.querki.jquery.{$, JQueryAjaxSettings, JQueryEventObject}
 import org.scalajs.dom._
-import org.scalajs.jquery.JQueryEventObject
+//import org.scalajs.jquery.JQueryEventObject
 import scalatags.Text.all._
 
 import scala.collection.mutable
@@ -16,6 +17,8 @@ import scala.scalajs.js
 import scala.scalajs.js.JSON
 import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
 import scala.scalajs.js.JSConverters._
+import org.scalajs.jquery.{jQuery => nativeJq}
+import myJs.Pojo._
 
 
 /**
@@ -24,33 +27,75 @@ import scala.scalajs.js.JSConverters._
 @JSExportTopLevel("LimitUpdate")
 object LimitUpdate {
 
-  val ids = ArrayBuffer[String]()
-
-  var lastChecked: Element = null
-  var myData: js.Array[js.Dictionary[String]] = _
-  var localSampleNumbers: js.Array[String] = _
-  var localSamples: js.Array[js.Dictionary[String]] = _
-  var selectedNumbers: Set[String] = _
   var isShifit: Boolean = false
+  var idStr: String = _
 
   @JSExport("init")
   def init = {
     initTable
-    //    $("#table").bootstrapTable()
-    //    bootStrapValidator
-    //    productLocalCheckbox
+    refreshNames()
+  }
+
+  def refreshTable = {
     refreshUserLimit { () =>
       refreshTableData { () =>
-        bindEvt
+        bindEvt(LocalTable)
       }
-    }
+      refreshBreedTableData { () =>
+        bindEvt(BreedTable)
+      }
+      refreshWildTableData { () =>
+        bindEvt(WildTable)
+      }
+      refreshExIntroductionTableData { () =>
+        bindEvt(ExIntroductionTable)
+      }
 
-    //    show("10")
+    }
+  }
+
+  @JSExport("userChange")
+  def userChange(y: Element) = {
+    val id = $(y).find(">option:selected").`val`().toString
+    idStr = id
+    refreshTable
 
   }
 
+  def refreshNames(f: () => js.Any = () => ()) = {
+    val url = g.jsRoutes.controllers.AdminController.getAllUserNames().url.toString
+    val ajaxSettings = JQueryAjaxSettings.url(s"${url}").contentType("application/json").
+      `type`("get").success { (data, status, e) =>
+      val rs = data.asInstanceOf[js.Array[String]]
+      $(":input[name='name']").select2(Select2Options.data(rs))
+      idStr = $("#userId").`val`().toString
+      if (idStr == "") {
+        $(":input[name='name']").trigger("change")
+      } else {
+        $(":input[name='name']").`val`(idStr).trigger("change")
+      }
+
+      f()
+    }
+    $.ajax(ajaxSettings)
+
+  }
+
+
+  def pageChange(table: MyTable): js.Function = (number: Int, size: Int) => {
+    bindEvt(table)
+  }
+
   def initTable = {
-    val checkColumn = ColumnOptions.field("checked").checkbox(true).formatter(checkFmt)
+    initLocalTable
+    initBreedTable
+    initWildTable
+    initExIntroductionTable
+  }
+
+  def initLocalTable = {
+    val table = LocalTable
+    val checkColumn = ColumnOptions.field("checked").checkbox(true).formatter(checkFmt(table))
     val columnNames = js.Array("number", "name", "unitNumber", "comment")
     val columns = js.Array(checkColumn) ++ columnNames.map { columnName =>
       val title = columnName match {
@@ -60,371 +105,231 @@ object LimitUpdate {
         case "comment" => "备注"
         case _ => columnName
       }
-      val fmt = tbFmt(columnName)
+      val fmt = table.tbFmt(columnName)
       ColumnOptions.field(columnName).title(title).sortable(true).formatter(fmt)
     }
-
-    val options = TableOptions.columns(columns)
-    $("#table").bootstrapTable(options)
+    val options = TableOptions.columns(columns).onPageChange(pageChange(table))
+    $(s"#${table.id}").bootstrapTable(options)
   }
 
-  def getIds = {
-    ids.clear()
-    val arrays = g.$("#table").bootstrapTable("getSelections").asInstanceOf[js.Array[js.Dictionary[String]]]
-    ids ++= arrays.map { x =>
+  def initBreedTable = {
+    val table = BreedTable
+    val checkColumn = ColumnOptions.field("checked").checkbox(true).formatter(checkFmt(table))
+    val columnNames = js.Array("number", "name", "comment")
+    val columns = js.Array(checkColumn) ++ columnNames.map { columnName =>
+      val title = columnName match {
+        case "number" => "保存号"
+        case "name" => "名称"
+        case "comment" => "备注"
+        case _ => columnName
+      }
+      val fmt = table.tbFmt(columnName)
+      ColumnOptions.field(columnName).title(title).sortable(true).formatter(fmt)
+    }
+    val options = TableOptions.columns(columns).onPageChange(pageChange(table))
+    $(s"#${table.id}").bootstrapTable(options)
+  }
+
+  def initWildTable = {
+    val table = WildTable
+    val checkColumn = ColumnOptions.field("checked").checkbox(true).formatter(checkFmt(table))
+    val columnNames = js.Array("number", "source", "comment")
+    val columns = js.Array(checkColumn) ++ columnNames.map { columnName =>
+      val title = columnName match {
+        case "number" => "原统一编号"
+        case "source" => "采集/原产地"
+        case "comment" => "备注"
+        case _ => columnName
+      }
+      val fmt = table.tbFmt(columnName)
+      ColumnOptions.field(columnName).title(title).sortable(true).formatter(fmt)
+    }
+    val options = TableOptions.columns(columns).onPageChange(pageChange(table))
+    $(s"#${table.id}").bootstrapTable(options)
+  }
+
+  def initExIntroductionTable = {
+    val table = ExIntroductionTable
+    val checkColumn = ColumnOptions.field("checked").checkbox(true).formatter(checkFmt(table))
+    val columnNames = js.Array("number", "name", "sourceArea", "seedSource", "comment")
+    val columns = js.Array(checkColumn) ++ columnNames.map { columnName =>
+      val title = columnName match {
+        case "number" => "统一编号"
+        case "name" => "品种名称"
+        case "sourceArea" => "原产地"
+        case "seedSource" => "种子来源"
+        case "comment" => "备注"
+        case _ => columnName
+      }
+      val fmt = table.tbFmt(columnName)
+      ColumnOptions.field(columnName).title(title).sortable(true).formatter(fmt)
+    }
+    val options = TableOptions.columns(columns).onPageChange(pageChange(table))
+    $(s"#${table.id}").bootstrapTable(options)
+  }
+
+  def oncheck(table: MyTable): js.Function = (e: JQueryEventObject, row: js.Dictionary[js.Any], y: Element) => {
+    val number = row.myGet("number")
+    table.numbers += number
+    updateLimit
+  }
+
+  def onUnCheck(table: MyTable): js.Function = (e: JQueryEventObject, row: js.Dictionary[js.Any], y: Element) => {
+    val number = row.myGet("number")
+    table.numbers -= number
+    updateLimit
+  }
+
+  def onCheckAll(table: MyTable): js.Function = (e: JQueryEventObject, rowsAfter: js.Array[js.Dictionary[js.Any]], rowsBefore: js.Array[js.Dictionary[js.Any]]) => {
+    val arrays = $(s"#${table.id}").bootstrapTable("getSelections").asInstanceOf[js.Array[js.Dictionary[String]]]
+    val ids = arrays.map { x =>
       x("number")
     }
-    if (ids.isEmpty) $("#deleteButton").attr("disabled", true) else
-      $("#deleteButton").attr("disabled", false)
-
-  }
-
-  val refreshIds = (e: JQueryEventObject, row: js.Dictionary[js.Any], y: Element) => {
-    shiftCheckbox(y)
-    getIds
+    table.numbers ++= ids.toSet
     updateLimit
   }
 
-  val refreshIdNoShift = (e: JQueryEventObject, row: js.Dictionary[js.Any], y: Element) => {
-    getIds
+  def onUncheckAll(table: MyTable): js.Function = (e: JQueryEventObject, rowsBefore: js.Array[js.Dictionary[js.Any]], rowsAfter: js.Any) => {
+    val ids = rowsBefore.map { x =>
+      x("number").toString
+    }
+    table.numbers --= ids.toSet
     updateLimit
   }
 
+  def numbersClear = {
+    LocalTable.numbers.clear()
+    BreedTable.numbers.clear()
+    WildTable.numbers.clear()
+    ExIntroductionTable.numbers.clear()
+  }
 
   def refreshUserLimit(f: () => js.Any = () => ()) = {
-    val url = g.jsRoutes.controllers.AdminController.getAllUserLimit().url.toString
-    val ajaxSettings = JQueryAjaxSettings.url(s"${url}?").contentType("application/json").
+    val url = g.jsRoutes.controllers.AdminController.getUserLimitById().url.toString
+    val ajaxSettings = JQueryAjaxSettings.url(s"${url}?id=${idStr}").contentType("application/json").
       `type`("get").success { (data, status, e) =>
-      val rs = data.asInstanceOf[js.Array[js.Dictionary[String]]]
-      myData = rs
-
+      val rs = data.asInstanceOf[js.Dictionary[String]]
+      numbersClear
+      LocalTable.numbers ++= rs("localSample").split(";").toSet
+      BreedTable.numbers ++= rs("breedSample").split(";").toSet
+      WildTable.numbers ++= rs("wildSample").split(";").toSet
+      ExIntroductionTable.numbers ++= rs("exIntroductionSample").split(";").toSet
       f()
     }
     $.ajax(ajaxSettings)
 
   }
 
-  def bindEvt = {
-    org.scalajs.jquery.jQuery("#table").on("check.bs.table", refreshIdNoShift)
-    $("tr[data-index] > td").on("mousedown", (y: Element, e: Event) => {
+  def bindEvt(table: MyTable) = {
+    val tableId = table.id
+    jQuery(s"#${tableId}").on("check.bs.table", oncheck(table))
+    $(s"#${tableId} tr[data-index] > td > input").on("mousedown", (y: Element, e: Event) => {
       val me = e.asInstanceOf[MouseEvent]
       isShifit = me.shiftKey
-      shiftCheckbox(y)
+      shiftCheckbox(table)(y)
     })
-
-    org.scalajs.jquery.jQuery("#table").on("uncheck.bs.table", refreshIdNoShift)
-    org.scalajs.jquery.jQuery("#table").on("check-all.bs.table", refreshIdNoShift)
-    org.scalajs.jquery.jQuery("#table").on("uncheck-all.bs.table", refreshIdNoShift)
+    org.scalajs.jquery.jQuery(s"#${tableId}").on("uncheck.bs.table", onUnCheck(table))
+    org.scalajs.jquery.jQuery(s"#${tableId}").on("check-all.bs.table", onCheckAll(table))
+    org.scalajs.jquery.jQuery(s"#${tableId}").on("uncheck-all.bs.table", onUncheckAll(table))
   }
 
-  def numberA(v: String) = {
-    val manageUrl = g.jsRoutes.controllers.adminC.LocalSampleController.getDetailInfo().url.toString
-    val manageStr = a(
-      title := "详细信息",
-      cursor.pointer,
-      href := s"${manageUrl}?number=${v}",
-      target := "_blank",
-      v
-    )
-    Array(manageStr).mkString("&nbsp;")
-  }
-
-  def tbFmt(columnName: String): js.Function = (v: js.Any, row: js.Dictionary[Any]) => columnName match {
-    case "number" => {
-      numberA(v.toString)
-    }
-    case x => {
-      v
-    }
-  }
-
-  def checkFmt: js.Function = (v: js.Any, row: js.Dictionary[Any]) => {
+  def checkFmt(table: MyTable): js.Function = (v: js.Any, row: js.Dictionary[Any]) => {
     val number = row("number").toString
-    if (selectedNumbers.contains(number)) {
+    val numbers = table.numbers
+    if (numbers.contains(number)) {
       true
     } else false
 
   }
 
   def refreshTableData(f: () => js.Any = () => ()) = {
-    val url = g.jsRoutes.controllers.LocalSampleController.getAllPhenotype().url.toString
+    val table = LocalTable
+    val index = layer.alert(Tool.loadingElement, layerOptions)
+    val url = g.jsRoutes.controllers.adminC.LocalSampleController.getAllPhenotype().url.toString
     val ajaxSettings = JQueryAjaxSettings.url(url).`type`("get") success { (data, status, e) =>
       val rs = data.asInstanceOf[js.Array[js.Dictionary[String]]]
-      val inDict = myData.filter { dict =>
-        dict("id") == "10"
-      }.head
-      selectedNumbers = inDict("localSample").split(";").toSet
-      //      val newRs = rs.map { dict =>
-      //        val number = dict("number")
-      //        if (selectedNumbers.contains(number)) {
-      //          val map = dict ++ Map("checked" -> "true")
-      //          map.toJSDictionary
-      //        } else dict
-      //      }
-      //      println(newRs.head)
-      localSamples = rs
-      $("#table").bootstrapTable("load", rs)
-      shiftCheckbox
+      $(s"#${table.id}").bootstrapTable("load", rs)
+      layer.close(index)
       f()
     }
     $.ajax(ajaxSettings)
 
   }
 
-  def fillCheckbox = {
-    val html = localSampleNumbers.map { inName =>
-      label(marginRight := 15,
-        input(`type` := "checkbox", cls := "ckb", name := "numbers[]", value := inName, onclick := s"Utils.setColumns('${inName}')", inName)
-      )
-    }.mkString
-    $("#checkbox").html(html)
+  def refreshBreedTableData(f: () => js.Any = () => ()) = {
+    val table = BreedTable
+    val url = g.jsRoutes.controllers.adminC.BreedSampleController.getAllPhenotype().url.toString
+    val ajaxSettings = JQueryAjaxSettings.url(url).`type`("get") success { (data, status, e) =>
+      val rs = data.asInstanceOf[js.Array[js.Dictionary[String]]]
+      $(s"#${table.id}").bootstrapTable("load", rs)
+      f()
+    }
+    $.ajax(ajaxSettings)
+
   }
 
-  def shiftCheckbox = (y: Element) => {
-    println($(y).prop("outerHTML"))
-    val data = $("#table").bootstrapTable("getData")
+  def refreshWildTableData(f: () => js.Any = () => ()) = {
+    val table = WildTable
+    val url = g.jsRoutes.controllers.adminC.WildSampleController.getAllPhenotype().url.toString
+    val ajaxSettings = JQueryAjaxSettings.url(url).`type`("get") success { (data, status, e) =>
+      val rs = data.asInstanceOf[js.Array[js.Dictionary[String]]]
+      $(s"#${table.id}").bootstrapTable("load", rs)
+      f()
+    }
+    $.ajax(ajaxSettings)
+
+  }
+
+  def refreshExIntroductionTableData(f: () => js.Any = () => ()) = {
+    val table = ExIntroductionTable
+    val url = g.jsRoutes.controllers.adminC.ExIntroductionController.getAllPhenotype().url.toString
+    val ajaxSettings = JQueryAjaxSettings.url(url).`type`("get") success { (data, status, e) =>
+      val rs = data.asInstanceOf[js.Array[js.Dictionary[String]]]
+      $(s"#${table.id}").bootstrapTable("load", rs)
+      f()
+    }
+    $.ajax(ajaxSettings)
+
+  }
+
+
+  def shiftCheckbox(table: MyTable) = (y: Element) => {
+    val lastChecked = table.lastChecked
     if (lastChecked == null) {
-      lastChecked = y
     } else {
       if (isShifit) {
-        val start = $(y).find(">input").attr("data-index").toString.toInt
-        val end = $(lastChecked).find(">input").attr("data-index").toString.toInt
-        println($(lastChecked).parent().html())
-        val status = $(lastChecked).parent().hasClass("selected")
-        println(status)
+        val start = $(y).attr("data-index").toString.toInt
+        val end = $(lastChecked).attr("data-index").toString.toInt
+        val status = $(lastChecked).is(":checked")
         val min = math.min(start, end)
         val max = math.max(start, end)
         (min until max).foreach { i =>
           if (status) {
-            $("#table").bootstrapTable("check", i)
+            $(s"#${table.id}").bootstrapTable("check", i)
           } else {
-            $("#table").bootstrapTable("uncheck", i)
+            $(s"#${table.id}").bootstrapTable("uncheck", i)
           }
-
         }
       }
-      lastChecked = y
     }
+    table.lastChecked = y
 
-  }
-
-
-  def productLocalCheckbox = {
-    val url = g.jsRoutes.controllers.LocalSampleController.getAllNumber().url.toString
-    val ajaxSettings = JQueryAjaxSettings.url(url).`type`("get").success { (data, status, e) =>
-      val rs = data.asInstanceOf[js.Array[String]]
-      localSampleNumbers = rs
-      fillCheckbox
-    }
-    $.ajax(ajaxSettings)
-  }
-
-
-  @JSExport("deleteData")
-  def deleteData(id: String) = {
-    val options = SwalOptions.title("").text("确定要删除此数据吗？").`type`("warning").showCancelButton(true).
-      showConfirmButton(true).confirmButtonClass("btn-danger").confirmButtonText("确定").closeOnConfirm(false).
-      cancelButtonText("取消").showLoaderOnConfirm(true)
-    Swal.swal(options, () => {
-      val url = g.jsRoutes.controllers.AdminController.deleteUserById().url.toString
-      val ajaxSettings = JQueryAjaxSettings.url(s"${url}?id=${id}").
-        `type`("get").contentType("application/json").success { (data, status, e) =>
-        refreshUserLimit { () =>
-          Swal.swal(SwalOptions.title("成功").text("删除成功").`type`("success"))
-        }
-      }.error { (data, status, e) =>
-        Swal.swal(SwalOptions.title("错误").text("删除失败").`type`("error"))
-      }
-      $.ajax(ajaxSettings)
-
-    })
-  }
-
-  @JSExport("operateFmt")
-  def operateFmt: js.Function = {
-    (v: js.Any, row: js.Dictionary[js.Any]) =>
-      val url = g.jsRoutes.controllers.AdminController.limitUpdateBefore().url.toString
-      val updateStr = a(
-        title := "修改",
-        cursor.pointer,
-        href := s"${url}?id=${row("id")}",
-        //        onclick := s"LimitManage.show('" + row("id") + "')",
-        target := "_blank",
-        span(
-          em(cls := "fa fa-edit")
-        )
-      )
-      val deleteStr = a(
-        title := "删除",
-        cursor.pointer,
-        onclick := s"UserManage.deleteData('" + row("id") + "')",
-        target := "_blank",
-        span(
-          em(cls := "fa fa-close")
-        )
-      )
-      Array(updateStr, deleteStr).mkString("&nbsp;")
-  }
-
-  @JSExport("show")
-  def show(id: String) = {
-    val index = layer.alert(myElement, layerOptions)
-    val inDict = myData.filter { dict =>
-      dict("id") == id
-    }.head
-    $(":input[name='id']").`val`(id)
-    $("#name").text(inDict("name"))
-    $("input:checkbox").prop("checked", false)
-    val selectedNumbers = inDict("localSample").split(";")
-    selectedNumbers.foreach { number =>
-      $(s":input[value=${number}]").prop("checked", true)
-    }
-    layer.close(index)
-    jQuery("#modal").modal("show")
-    shiftCheckbox
   }
 
   @JSExport("updateLimit")
   def updateLimit = {
     val url = g.jsRoutes.controllers.AdminController.refreshLimit().url.toString
-    println(ids)
     val data = js.Dictionary(
-      "id" -> 10,
-      "numbers" -> ids.toJSArray
+      "id" -> idStr,
+      "localNumbers" -> LocalTable.numbers.toJSArray,
+      "breedNumbers" -> BreedTable.numbers.toJSArray,
+      "wildNumbers" -> WildTable.numbers.toJSArray,
+      "exIntroductionNumbers" -> ExIntroductionTable.numbers.toJSArray,
     )
     val ajaxSettings = JQueryAjaxSettings.url(url).`type`("post").data(JSON.stringify(data)).
       contentType("application/json").success { (data, status, e) =>
-      selectedNumbers = selectedNumbers ++ ids.toSet
-      //      refreshTableData { () =>
-      //      }
-
-    }
-    $.ajax(ajaxSettings)
-
-  }
-
-
-  def refreshLocalSample = {
-
-
-  }
-
-  @JSExport("add")
-  def add = {
-    val bv = jQuery("#form").data("bootstrapValidator")
-    bv.validate()
-    val valid = bv.isValid().asInstanceOf[Boolean]
-    if (valid) {
-      val data = $(s"#form").serialize()
-      val index = layer.alert(myElement, layerOptions)
-      val url = g.jsRoutes.controllers.AdminController.addUser().url.toString
-      val ajaxSettings = JQueryAjaxSettings.url(url).`type`("post").data(data).success { (data, status, e) =>
-        refreshUserLimit { () =>
-          layer.close(index)
-          jQuery("#addModal").modal("hide")
-          bv.resetForm(true)
-          Swal.swal(SwalOptions.title("成功").text("新增成功!").`type`("success"))
-        }
-
-      }
-      $.ajax(ajaxSettings)
-
-    }
-
-  }
-
-  @JSExport("resetShow")
-  def resetShow(id: String) = {
-    val url = g.jsRoutes.controllers.AdminController.getUserById().url.toString
-    val ajaxSettings = JQueryAjaxSettings.url(s"${url}?id=${id}").
-      `type`("get").success { (data, status, e) =>
-      val rs = data.asInstanceOf[js.Dictionary[String]]
-      $("#updateForm input[name='name']").`val`(rs("name"))
-      jQuery("#updateModal").modal("show")
     }
     $.ajax(ajaxSettings)
   }
-
-  @JSExport("update")
-  def update = {
-    val formId = "updateForm"
-    val bv = jQuery(s"#${formId}").data("bootstrapValidator")
-    bv.validate()
-    val valid = bv.isValid().asInstanceOf[Boolean]
-    if (valid) {
-      val data = $(s"#${formId}").serialize()
-      val index = layer.alert(myElement, layerOptions)
-      val url = g.jsRoutes.controllers.AdminController.updateUser().url.toString
-      val ajaxSettings = JQueryAjaxSettings.url(url).`type`("post").data(data).success { (data, status, e) =>
-        refreshUserLimit { () =>
-          layer.close(index)
-          jQuery("#updateModal").modal("hide")
-          bv.resetForm(true)
-          Swal.swal(SwalOptions.title("成功").text("密码重置成功!").`type`("success"))
-        }
-
-      }
-      $.ajax(ajaxSettings)
-    }
-  }
-
-  def bootStrapValidator = {
-    val url = g.jsRoutes.controllers.AdminController.userNameCheck().url.toString
-    val dict = js.Dictionary(
-      "feedbackIcons" -> js.Dictionary(
-        "valid" -> "glyphicon glyphicon-ok",
-        "invalid" -> "glyphicon glyphicon-remove",
-        "validating" -> "glyphicon glyphicon-refresh",
-      ),
-      "fields" -> js.Dictionary(
-        "name" -> js.Dictionary(
-          "validators" -> js.Dictionary(
-            "notEmpty" -> js.Dictionary(
-              "message" -> "用户名不能为空！"
-            ),
-            "remote" -> js.Dictionary(
-              "message" -> "用户名已存在！",
-              "url" -> url,
-              "delay" -> 1000,
-              "type" -> "POST",
-            ),
-          )
-        ),
-        "password" -> js.Dictionary(
-          "validators" -> js.Dictionary(
-            "notEmpty" -> js.Dictionary(
-              "message" -> "密码不能为空！"
-            ),
-          )
-        ),
-      )
-    )
-    g.$("#form").bootstrapValidator(dict)
-    updateFormBootStrapValidator
-
-  }
-
-  def updateFormBootStrapValidator = {
-    val url = g.jsRoutes.controllers.AdminController.userNameCheck().url.toString
-    val dict = js.Dictionary(
-      "feedbackIcons" -> js.Dictionary(
-        "valid" -> "glyphicon glyphicon-ok",
-        "invalid" -> "glyphicon glyphicon-remove",
-        "validating" -> "glyphicon glyphicon-refresh",
-      ),
-      "fields" -> js.Dictionary(
-        "password" -> js.Dictionary(
-          "validators" -> js.Dictionary(
-            "notEmpty" -> js.Dictionary(
-              "message" -> "密码不能为空！"
-            ),
-          )
-        ),
-      )
-    )
-    g.$("#updateForm").bootstrapValidator(dict)
-
-  }
-
 
 }

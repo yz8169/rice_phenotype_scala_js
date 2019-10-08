@@ -11,6 +11,7 @@ import scala.scalajs.js.JSConverters._
 import scala.scalajs.js.JSON
 import scala.scalajs.js.annotation._
 import myJs.admin.breedSample.Manage
+import myJs.myPkg.Implicits._
 
 
 /**
@@ -23,7 +24,17 @@ object BreedSampleView {
   @JSExport("init")
   def init = {
     refreshTableView
-    Manage.refreshTableData()
+    refreshTableData()
+
+  }
+
+  def refreshTableData(f: () => js.Any = () => ()) = {
+    val url = g.jsRoutes.controllers.BreedSampleController.getAllPhenotype().url.toString
+    val ajaxSettings = JQueryAjaxSettings.url(url).`type`("get") success { (data, status, e) =>
+      $("#table").bootstrapTable("load", data)
+      f()
+    }
+    $.ajax(ajaxSettings)
 
   }
 

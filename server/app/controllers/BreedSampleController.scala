@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils
 import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, ControllerComponents}
 import shared.Shared
-import tool.{FormTool, Tool}
+import tool.{BreedSampleTool, BreedSampleToolWithLimit, FormTool, Tool}
 import utils.Utils
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -15,8 +15,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 /**
   * Created by yz on 2019/3/12
   */
-class BreedSampleController @Inject()(cc: ControllerComponents, breedSampleDao: BreedSampleDao,
-                                      formTool:FormTool) extends AbstractController(cc){
+class BreedSampleController @Inject()(cc: ControllerComponents, val breedSampleDao: BreedSampleDao,
+                                      val userLimitDao: UserLimitDao,
+                                      formTool:FormTool) extends AbstractController(cc) with
+  BreedSampleTool with BreedSampleToolWithLimit{
 
   def viewBefore = Action { implicit request =>
     Ok(views.html.breedSample.view())
@@ -41,7 +43,7 @@ class BreedSampleController @Inject()(cc: ControllerComponents, breedSampleDao: 
   }
 
   def getAllPhenotype = Action.async { implicit request =>
-    breedSampleDao.selectAll.map { rows =>
+    selectAll.map { rows =>
       val phenotypeNames = Shared.breedSamplePhenotypeNames
       val array = rows.map { row =>
         val map = Utils.str2Map(row.phenotype)
@@ -70,7 +72,7 @@ class BreedSampleController @Inject()(cc: ControllerComponents, breedSampleDao: 
   }
 
   def getAllNumber = Action.async { implicit request =>
-    breedSampleDao.selectAllNumber.map { x =>
+    selectAllNumber.map { x =>
       Ok(Json.toJson(x))
     }
   }
@@ -78,7 +80,7 @@ class BreedSampleController @Inject()(cc: ControllerComponents, breedSampleDao: 
   def getStatData = Action.async { implicit request =>
     val data = formTool.statForm.bindFromRequest().get
     val phenotype = data.phenotype
-    breedSampleDao.selectAll.map { rows =>
+    selectAll.map { rows =>
       val array = rows.map { row =>
         val map = Utils.str2Map(row.phenotype)
         Map("number" -> row.number, data.phenotype -> map.getOrElse(phenotype, ""))

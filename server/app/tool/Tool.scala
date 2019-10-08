@@ -6,6 +6,8 @@ import java.nio.file.Files
 import dao.ModeDao
 import javax.inject.Inject
 import org.apache.commons.lang3.StringUtils
+import play.api.mvc.RequestHeader
+import shared.Shared
 import tool.Pojo.StatData
 import utils.Utils
 
@@ -29,12 +31,18 @@ class Tool @Inject()(modeDao: ModeDao) {
     if (!isTestMode) Utils.deleteDirectory(direcotry)
   }
 
+
+
 }
 
 object Tool {
 
   def validByNumbers(numbers: Seq[String], map: Map[String, String]) = {
     if (numbers.isEmpty) true else numbers.contains(map("number"))
+  }
+
+  def getUserId(implicit request: RequestHeader) = {
+    request.session.get(Shared.idStr).get.toInt
   }
 
 

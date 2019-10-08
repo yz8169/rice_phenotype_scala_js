@@ -187,5 +187,21 @@ class WildSampleController @Inject()(cc: ControllerComponents, wildSampleDao: Wi
 
   }
 
+  def getAllPhenotype = Action.async { implicit request =>
+    wildSampleDao.selectAll.map { rows =>
+      val phenotypeNames = Shared.wildSamplePhenotypeNames
+      val array = rows.map { row =>
+        val map = Utils.str2Map(row.phenotype)
+        val newMap = phenotypeNames.map { x =>
+          (x, map.getOrElse(x, ""))
+        }.toMap
+        Map("number" -> row.number,"source"->row.source, "comment" -> row.comment) ++ newMap
+      }
+      val json = Json.toJson(array)
+      Ok(json)
+    }
+
+  }
+
 
 }

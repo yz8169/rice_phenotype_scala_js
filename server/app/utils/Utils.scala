@@ -244,16 +244,21 @@ object Utils {
     }
   }
 
-  def getArrayByTs[A:ClassTag, B:ClassTag](x: Seq[(A, B)]) = {
-    x.map { case (t1, t2) =>
-      val map1 = getMapByT(t1)
-      val map2 = getMapByT(t2)
-      map1 ++ map2
+  def getArrayByTs[A: ClassTag, B: ClassTag](x: Seq[(A, B)]) = {
+    x.map {t =>
+     getMapByT(t)
     }
   }
 
+  def getMapByT[A: ClassTag, B: ClassTag](x: (A, B)):Map[String,String] = {
+    val (t1, t2) = x
+    val map1 = getMapByT(t1)
+    val map2 = getMapByT(t2)
+    map1 ++ map2
+  }
 
-  def getMapByT[T](t: T, jsonField: String) = {
+
+  def getMapByT[T](t: T, jsonField: String):Map[String,String] = {
     t.getClass.getDeclaredFields.toBuffer.flatMap { x: Field =>
       x.setAccessible(true)
       val kind = x.get(t)

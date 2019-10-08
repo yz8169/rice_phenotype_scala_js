@@ -11,8 +11,10 @@ object Pojo {
 
   case class IdData(id: Int)
 
-  case class UserLimitData(id: Int,numbers:Seq[String])
+  case class IdOpData(id: Option[Int])
 
+  case class UserLimitData(id: Int, localNumbers: Seq[String], breedNumbers: Seq[String], wildNumbers: Seq[String],
+                           exIntroductionNumbers: Seq[String])
 
 
 }
